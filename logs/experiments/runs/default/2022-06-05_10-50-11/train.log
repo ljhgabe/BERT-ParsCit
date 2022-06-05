@@ -1,4 +1,0 @@
-[2022-06-05 10:50:12,991][src.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
-[2022-06-05 10:50:12,991][src.utils][INFO] - Printing config tree with Rich! <config.print_config=True>
-[2022-06-05 10:50:12,992][src.utils][INFO] - Field 'logger' not found in config
-[2022-06-05 10:50:13,029][src.training_pipeline][INFO] - Instantiating datamodule <src.datamodules.bert_parscit_datamodule.BertParsCitDataModule>

@@ -5,8 +5,8 @@ from datasets import Dataset, DatasetDict
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 from transformers import DataCollatorForTokenClassification
-from src.datamodules.components.class_label import LABEL_LIST
-from src.datamodules.components.preprocess import preprocess
+from src.datamodules.components.class_label import LABEL_LIST, label2id
+from src.datamodules.components.preprocess import preprocess, tokenize_and_align_labels
 from src.models.components.bert_tokenizer import bert_tokenizer
 
 SYNTHETIC_DATASET_REPO = "myvision/yuanchuan-synthetic-dataset-final"
@@ -31,8 +31,6 @@ class BERTParsCitDataModule(LightningDataModule):
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
-
-        print("check")
 
         self.data_collator = DataCollatorForTokenClassification(tokenizer=bert_tokenizer)
 
@@ -77,7 +75,7 @@ class BERTParsCitDataModule(LightningDataModule):
             shuffled_raw_trainset = raw_trainset.shuffle(seed=self.hparams.seed)
             selected_indices = list(range(sum(self.hparams.train_val_split)))
             selected_train_data = shuffled_raw_trainset.select(selected_indices[:self.hparams.train_val_split[0]])
-            selected_val_data = shuffled_raw_trainset.select(selected_indices[self.hparams.train_val_split[1]])
+            selected_val_data = shuffled_raw_trainset.select(selected_indices[self.hparams.train_val_split[0]:])
 
             dataset_dict = DatasetDict()
             dataset_dict['train'] = selected_train_data
@@ -91,9 +89,16 @@ class BERTParsCitDataModule(LightningDataModule):
                 load_from_cache_file=True
             )
 
-            self.data_train = processed_datasets["train"]
-            self.data_val = processed_datasets["val"]
-            self.data_test = processed_datasets["test"]
+            tokenized_datasets = processed_datasets.map(
+                lambda x: tokenize_and_align_labels(x, label2id),
+                batched=True,
+                remove_columns=processed_datasets["train"].column_names,
+                load_from_cache_file=True
+            )   
+
+            self.data_train = tokenized_datasets["train"]
+            self.data_val = tokenized_datasets["val"]
+            self.data_test = tokenized_datasets["test"]
 
     def train_dataloader(self):
         return DataLoader(

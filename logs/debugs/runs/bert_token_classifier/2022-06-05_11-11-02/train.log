@@ -1,3 +1,0 @@
-[2022-06-05 11:11:04,035][src.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
-[2022-06-05 11:11:04,036][pytorch_lightning.utilities.seed][INFO] - Global seed set to 777
-[2022-06-05 11:11:04,036][src.training_pipeline][INFO] - Instantiating datamodule <src.datamodules.bert_parscit_datamodule.BertParsCitDataModule>

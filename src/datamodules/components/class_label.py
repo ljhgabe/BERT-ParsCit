@@ -2,7 +2,7 @@ LABEL_LIST = [
     'citation-number',
     'collection-title',
     'container-title',
-    'DOI',
+    'doi',
     'issue',
     'number-of-pages',
     'volume',
@@ -15,7 +15,7 @@ LABEL_LIST = [
     'page',
     'publisher',
     'title',
-    'URL',
+    'url',
     'year-suffix'
 ]
 

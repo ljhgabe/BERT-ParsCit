@@ -87,28 +87,28 @@ class BertParsCitLitModule(LightningModule):
             input_ids=input_ids,
             predictions=preds,
             labels=labels,
-            label_names=LABEL_LIST,
-            tokenizer=self.tokenizer
+            label_names=LABEL_LIST
         )
 
         # log val metrics
-        acc = self.val_acc(true_preds, true_labels)
-        f1 = self.val_f1(true_preds, true_labels)
+        # acc = self.val_acc(true_preds, true_labels)
+        # f1 = self.val_f1(true_preds, true_labels)
 
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
-        self.log("val/f1", f1, on_step=False, on_epoch=True, prog_bar=True)
+        # self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        # self.log("val/f1", f1, on_step=False, on_epoch=True, prog_bar=True)
 
-        return {"loss": loss, "accuracy": acc, "f1": f1, "preds": true_preds, "labels": true_labels}
+        return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute()  # get val accuracy from current epoch
-        self.val_acc_best.update(acc)
-        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+        # acc = self.val_acc.compute()  # get val accuracy from current epoch
+        # self.val_acc_best.update(acc)
+        # self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
-        f1 = self.val_f1.compute()
-        self.val_f1_best.update(f1)
-        self.log("val/f1_best", self.val_f1_best.compute(), on_epoch=True, prog_bar=True)
+        # f1 = self.val_f1.compute()
+        # self.val_f1_best.update(f1)
+        # self.log("val/f1_best", self.val_f1_best.compute(), on_epoch=True, prog_bar=True)
+        pass
 
     def test_step(self, batch: Any, batch_idx: int):
         input_ids = batch["input_ids"]
@@ -118,19 +118,18 @@ class BertParsCitLitModule(LightningModule):
             input_ids=input_ids,
             predictions=preds,
             labels=labels,
-            label_names=LABEL_LIST,
-            tokenizer=self.tokenizer
+            label_names=LABEL_LIST
         )
 
         # log test metrics
-        acc = self.test_acc(true_preds, true_labels)
-        f1 = self.test_f1(true_preds, true_labels)
+        # acc = self.test_acc(true_preds, true_labels)
+        # f1 = self.test_f1(true_preds, true_labels)
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
-        self.log("test/acc", acc, on_step=False, on_epoch=True)
-        self.log("test/f1", f1, on_step=False, on_epoch=True)
+        # self.log("test/acc", acc, on_step=False, on_epoch=True)
+        # self.log("test/f1", f1, on_step=False, on_epoch=True)
 
-        return {"loss": loss, "accuracy": acc, "f1": f1, "preds": true_preds, "labels": true_labels}
+        return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def test_epoch_end(self, outputs: List[Any]):
         pass
