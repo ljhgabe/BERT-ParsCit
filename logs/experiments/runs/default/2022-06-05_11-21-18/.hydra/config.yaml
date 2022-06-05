@@ -1,0 +1,53 @@
+original_work_dir: ${hydra:runtime.cwd}
+data_dir: ${original_work_dir}/data/
+print_config: true
+ignore_warnings: true
+train: true
+test: true
+seed: null
+name: default
+datamodule:
+  _target_: src.datamodules.bert_parscit_datamodule.BERTParsCitDataModule
+  data_dir: ${data_dir}
+  data_repo: myvision/yuanchuan-synthetic-dataset-final
+  batch_size: 8
+  train_val_split:
+  - 50000
+  - 5000
+  num_workers: 0
+  pin_memory: false
+  data_cache_dir: /data3/jiahe/synthetic-final/
+model:
+  _target_: src.models.bert_parscit_module.BertParsCitLitModule
+  lr: 2.0e-05
+  model:
+    _target_: src.models.components.bert_token_classifier.BertTokenClassifier
+    model_checkpoint: allenai/scibert_scivocab_uncased
+    cache_dir: /data3/jiahe/parscit/
+callbacks:
+  model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: val/acc
+    mode: max
+    save_top_k: 1
+    save_last: true
+    verbose: false
+    dirpath: checkpoints/
+    filename: epoch_{epoch:03d}
+    auto_insert_metric_name: false
+  early_stopping:
+    _target_: pytorch_lightning.callbacks.EarlyStopping
+    monitor: val/acc
+    mode: max
+    patience: 100
+    min_delta: 0
+  model_summary:
+    _target_: pytorch_lightning.callbacks.RichModelSummary
+    max_depth: -1
+  rich_progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
+trainer:
+  _target_: pytorch_lightning.Trainer
+  min_epochs: 1
+  max_epochs: 10
+  resume_from_checkpoint: null

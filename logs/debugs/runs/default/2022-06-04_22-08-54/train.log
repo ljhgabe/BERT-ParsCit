@@ -1,0 +1,2 @@
+[2022-06-04 22:08:56,246][src.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
+[2022-06-04 22:08:56,247][src.training_pipeline][INFO] - Instantiating datamodule <src.datamodules.bert_parscit_datamodule.BertParsCitDataModule>

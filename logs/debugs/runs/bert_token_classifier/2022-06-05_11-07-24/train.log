@@ -1,0 +1,24 @@
+[2022-06-05 11:07:26,472][src.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
+[2022-06-05 11:07:26,472][pytorch_lightning.utilities.seed][INFO] - Global seed set to 777
+[2022-06-05 11:07:26,473][src.training_pipeline][INFO] - Instantiating datamodule <src.datamodules.mnist_datamodule.MNISTDataModule>
+[2022-06-05 11:07:26,479][src.training_pipeline][INFO] - Instantiating model <src.models.bert_parscit_module.BertParsCitLitModule>
+[2022-06-05 11:07:26,484][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:27,522][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/tokenizer_config.json HTTP/1.1" 404 0
+[2022-06-05 11:07:27,528][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:28,531][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/config.json HTTP/1.1" 200 0
+[2022-06-05 11:07:28,541][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:29,545][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/tokenizer_config.json HTTP/1.1" 404 0
+[2022-06-05 11:07:29,551][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:30,552][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/vocab.txt HTTP/1.1" 200 0
+[2022-06-05 11:07:30,558][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:31,532][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/tokenizer.json HTTP/1.1" 404 0
+[2022-06-05 11:07:31,539][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:32,515][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/added_tokens.json HTTP/1.1" 404 0
+[2022-06-05 11:07:32,522][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:33,505][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/special_tokens_map.json HTTP/1.1" 404 0
+[2022-06-05 11:07:33,512][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:34,537][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/tokenizer_config.json HTTP/1.1" 404 0
+[2022-06-05 11:07:34,544][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:35,503][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/config.json HTTP/1.1" 200 0
+[2022-06-05 11:07:35,546][urllib3.connectionpool][DEBUG] - Starting new HTTPS connection (1): huggingface.co:443
+[2022-06-05 11:07:36,549][urllib3.connectionpool][DEBUG] - https://huggingface.co:443 "HEAD /allenai/scibert_scivocab_uncased/resolve/main/config.json HTTP/1.1" 200 0

@@ -1,4 +1,4 @@
-_target_: src.datamodules.bert_parscit_datamodule.BertParsCitDataModule
+_target_: src.datamodules.bert_parscit_datamodule.BERTParsCitDataModule
 
 data_dir: ${data_dir} # data_dir is specified in config.yaml
 data_repo: "myvision/yuanchuan-synthetic-dataset-final"
@@ -6,4 +6,4 @@ batch_size: 8
 train_val_split: [50000, 5000]
 num_workers: 0
 pin_memory: False
-data_cache_dir: ".cache/"
+data_cache_dir:  "/data3/jiahe/synthetic-final/"

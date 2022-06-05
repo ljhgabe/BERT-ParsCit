@@ -18,6 +18,8 @@ name: "bert_token_classifier"
 
 seed: 777
 
+# cache_dir: "/data3/jiahe/synthetic"
+
 trainer:
   min_epochs: 5
   max_epochs: 10
@@ -27,7 +29,7 @@ model:
   lr: 2e-5
   net:
     model_checkpoint: "scibert_scivocab_uncased"
-    cache_dir: "./cache/"
+    cache_dir: "/data3/jiahe/"
 
 datamodule:
   batch_size: 8

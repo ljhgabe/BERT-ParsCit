@@ -11,10 +11,10 @@ from src.models.components.bert_tokenizer import bert_tokenizer
 
 SYNTHETIC_DATASET_REPO = "myvision/yuanchuan-synthetic-dataset-final"
 
-DATA_CACHE_DIR = "/data3/jiahe/synthetic-final"
+DATA_CACHE_DIR = "/data3/jiahe/synthetic-final/"
 
 
-class BertParsCitDataModule(LightningDataModule):
+class BERTParsCitDataModule(LightningDataModule):
 
     def __init__(
         self,
@@ -31,6 +31,8 @@ class BertParsCitDataModule(LightningDataModule):
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
+
+        print("check")
 
         self.data_collator = DataCollatorForTokenClassification(tokenizer=bert_tokenizer)
 
@@ -62,7 +64,7 @@ class BertParsCitDataModule(LightningDataModule):
         if not self.data_train and not self.data_val and not self.data_test:
             raw_trainset = datasets.load_dataset(
                 self.hparams.data_repo,
-                split="train[:60000]",
+                split="train[:100000]",
                 cache_dir=self.hparams.data_cache_dir
             )
 

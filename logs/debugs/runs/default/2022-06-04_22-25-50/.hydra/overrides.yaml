@@ -1,0 +1,2 @@
+- debug=default
+- +HYDRA_FULL_ERROR=1

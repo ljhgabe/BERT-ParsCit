@@ -1,0 +1,5 @@
+[2022-06-05 11:02:57,352][src.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
+[2022-06-05 11:02:57,353][src.utils][INFO] - Printing config tree with Rich! <config.print_config=True>
+[2022-06-05 11:02:57,395][pytorch_lightning.utilities.seed][INFO] - Global seed set to 777
+[2022-06-05 11:02:57,395][src.training_pipeline][INFO] - Instantiating datamodule <src.datamodules.mnist_datamodule.MNISTDataModule>
+[2022-06-05 11:02:57,401][src.training_pipeline][INFO] - Instantiating model <src.models.bert_parscit_module.BertParsCitLitModule>
