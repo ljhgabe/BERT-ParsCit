@@ -35,3 +35,4 @@ omegaconf~=2.2.2
 transformers~=4.19.2
 packaging~=21.3
 datasets~=2.2.2
+beautifulsoup4~=4.9.0
