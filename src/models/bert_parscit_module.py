@@ -31,14 +31,14 @@ class BertParsCitLitModule(LightningModule):
         self.tokenizer = bert_tokenizer
 
         # Calculating accuracy
-        self.train_acc = Accuracy()
-        self.val_acc = Accuracy()
-        self.test_acc = Accuracy()
+        self.train_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
+        self.val_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
+        self.test_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
 
         # Calculating F1 score
-        self.train_f1 = F1Score()
-        self.val_f1 = F1Score()
-        self.test_f1 = F1Score()
+        self.train_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro") 
+        self.val_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro")
+        self.test_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro")
 
         # Calculating confusion matrix
         self.conf_matrix = ConfusionMatrix(num_classes=len(LABEL_LIST))
@@ -73,7 +73,7 @@ class BertParsCitLitModule(LightningModule):
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
         # remember to always return loss from `training_step()` or else backpropagation will fail!
-        return {"loss": loss, "preds": preds, "labels": labels}
+        return {"loss": loss}
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
@@ -91,24 +91,23 @@ class BertParsCitLitModule(LightningModule):
         )
 
         # log val metrics
-        # acc = self.val_acc(true_preds, true_labels)
-        # f1 = self.val_f1(true_preds, true_labels)
+        acc = self.val_acc(true_preds, true_labels)
+        f1 = self.val_f1(true_preds, true_labels)
 
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        # self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
-        # self.log("val/f1", f1, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/f1", f1, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        # acc = self.val_acc.compute()  # get val accuracy from current epoch
-        # self.val_acc_best.update(acc)
-        # self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+        acc = self.val_acc.compute()  # get val accuracy from current epoch
+        self.val_acc_best.update(acc)
+        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
-        # f1 = self.val_f1.compute()
-        # self.val_f1_best.update(f1)
-        # self.log("val/f1_best", self.val_f1_best.compute(), on_epoch=True, prog_bar=True)
-        pass
+        f1 = self.val_f1.compute()
+        self.val_f1_best.update(f1)
+        self.log("val/f1_best", self.val_f1_best.compute(), on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         input_ids = batch["input_ids"]
@@ -122,12 +121,12 @@ class BertParsCitLitModule(LightningModule):
         )
 
         # log test metrics
-        # acc = self.test_acc(true_preds, true_labels)
-        # f1 = self.test_f1(true_preds, true_labels)
+        acc = self.test_acc(true_preds, true_labels)
+        f1 = self.test_f1(true_preds, true_labels)
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
-        # self.log("test/acc", acc, on_step=False, on_epoch=True)
-        # self.log("test/f1", f1, on_step=False, on_epoch=True)
+        self.log("test/acc", acc, on_step=False, on_epoch=True)
+        self.log("test/f1", f1, on_step=False, on_epoch=True)
 
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
@@ -136,11 +135,11 @@ class BertParsCitLitModule(LightningModule):
 
     def on_epoch_end(self):
         # reset metrics at the end of every epoch
-        self.train_acc.reset()
+        # self.train_acc.reset()
         self.val_acc.reset()
         self.test_acc.reset()
 
-        self.train_f1.reset()
+        # self.train_f1.reset()
         self.val_f1.reset()
         self.test_f1.reset()
 
