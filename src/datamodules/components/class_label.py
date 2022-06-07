@@ -17,7 +17,8 @@ LABEL_LIST = [
     'publisher',
     'title',
     'url',
-    'year-suffix'
+    'year-suffix',
+    'other'
 ]
 
 id2label = {str(i): label for i, label in enumerate(LABEL_LIST)}

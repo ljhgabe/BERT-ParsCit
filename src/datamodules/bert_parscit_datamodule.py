@@ -72,6 +72,12 @@ class BERTParsCitDataModule(LightningDataModule):
                 cache_dir=self.hparams.data_cache_dir
             )
 
+            raw_cora = datasets.load_dataset(
+                "myvision/cora-test",
+                split="train",
+                cache_dir=self.hparams.data_cache_dir
+            )
+
             shuffled_raw_trainset = raw_trainset.shuffle(seed=self.hparams.seed)
             selected_indices = list(range(sum(self.hparams.train_val_split)))
             selected_train_data = shuffled_raw_trainset.select(selected_indices[:self.hparams.train_val_split[0]])
@@ -79,8 +85,8 @@ class BERTParsCitDataModule(LightningDataModule):
 
             dataset_dict = DatasetDict()
             dataset_dict['train'] = selected_train_data
-            dataset_dict['val'] = selected_val_data
-            dataset_dict['test'] = raw_testset
+            dataset_dict['val'] = raw_testset # selected_val_data
+            # dataset_dict['test'] = raw_testset ## disabled for testing using cora 
 
             processed_datasets = dataset_dict.map(
                 preprocess,
@@ -88,6 +94,8 @@ class BERTParsCitDataModule(LightningDataModule):
                 remove_columns=dataset_dict["train"].column_names,
                 load_from_cache_file=True
             )
+
+            processed_datasets["test"] = raw_cora
 
             tokenized_datasets = processed_datasets.map(
                 lambda x: tokenize_and_align_labels(x, label2id),

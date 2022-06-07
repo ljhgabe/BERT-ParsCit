@@ -31,14 +31,14 @@ class BertParsCitLitModule(LightningModule):
         self.tokenizer = bert_tokenizer
 
         # Calculating accuracy
-        self.train_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
-        self.val_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
-        self.test_acc = Accuracy(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST))
+        self.train_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
+        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
+        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
 
         # Calculating F1 score
-        self.train_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro") 
-        self.val_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro")
-        self.test_f1 = F1Score(num_classes=len(LABEL_LIST)+1, mdmc_average="global", ignore_index=len(LABEL_LIST), average="micro")
+        self.train_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro") 
+        self.val_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro")
+        self.test_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro")
 
         # Calculating confusion matrix
         self.conf_matrix = ConfusionMatrix(num_classes=len(LABEL_LIST))
