@@ -62,7 +62,7 @@ class BERTParsCitDataModule(LightningDataModule):
         if not self.data_train and not self.data_val and not self.data_test:
             raw_trainset = datasets.load_dataset(
                 self.hparams.data_repo,
-                split="train[:100000]",
+                split="train",
                 cache_dir=self.hparams.data_cache_dir
             )
 

@@ -12,6 +12,7 @@ LABEL_LIST = [
     'day',
     'author',
     'editor',
+    'edition',
     'page',
     'publisher',
     'title',
