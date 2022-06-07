@@ -1,6 +1,7 @@
 from typing import Any, List
 
 import torch
+import wandb
 from pytorch_lightning import LightningModule
 from torchmetrics import ConfusionMatrix
 from torchmetrics import F1Score
@@ -123,10 +124,17 @@ class BertParsCitLitModule(LightningModule):
         # log test metrics
         acc = self.test_acc(true_preds, true_labels)
         f1 = self.test_f1(true_preds, true_labels)
+        confmat = self.conf_matrix(true_preds, true_labels)
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/f1", f1, on_step=False, on_epoch=True)
+        wandb.log({"conf_mat" : wandb.plot.confusion_matrix(
+            probs=None,
+            y_true=torch.flatten(true_labels).tolist(), 
+            preds=torch.flatten(true_preds).tolist(),
+            class_names=LABEL_LIST
+        )})
 
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
