@@ -14,7 +14,7 @@
 
 ## Description
 
-This is the repository of ParsCit-ParsCit and is under active development at National University of Singapore (NUS), Singapore
+This is the repository of ParsCit-ParsCit and is under active development at National University of Singapore (NUS), Singapore. The project was built upon a [template by ashleve](https://github.com/ashleve/lightning-hydra-template).
 
 ## How to run
 
