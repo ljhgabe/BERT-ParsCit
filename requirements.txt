@@ -10,11 +10,11 @@ hydra-colorlog>=1.1.0
 hydra-optuna-sweeper>=1.1.0
 
 # --------- loggers --------- #
-# wandb
+wandb
 # neptune-client
 # mlflow
 # comet-ml
-# tensorboard
+tensorboard
 
 # --------- linters --------- #
 pre-commit      # hooks for applying linters on commit
@@ -31,6 +31,7 @@ pytest~=7.1.2
 sh~=1.14.2
 pudb            # debugger
 
+seaborn
 omegaconf~=2.2.2
 transformers~=4.19.2
 packaging~=21.3

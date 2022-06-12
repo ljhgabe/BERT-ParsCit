@@ -2,6 +2,9 @@ from typing import Any, List
 
 import torch
 import wandb
+import seaborn as sn
+import matplotlib.pyplot as plt
+
 from pytorch_lightning import LightningModule
 from torchmetrics import ConfusionMatrix
 from torchmetrics import F1Score
@@ -32,14 +35,14 @@ class BertParsCitLitModule(LightningModule):
         self.tokenizer = bert_tokenizer
 
         # Calculating accuracy
-        self.train_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
-        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
-        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1)
+        self.train_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
+        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
+        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
 
-        # Calculating F1 score
-        self.train_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro") 
-        self.val_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro")
-        self.test_f1 = F1Score(num_classes=len(LABEL_LIST), mdmc_average="global", ignore_index=len(LABEL_LIST) - 1, average="micro")
+        # Calculating Micro F1 score
+        self.train_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro") 
+        self.val_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro")
+        self.test_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro")
 
         # Calculating confusion matrix
         self.conf_matrix = ConfusionMatrix(num_classes=len(LABEL_LIST))
@@ -91,9 +94,12 @@ class BertParsCitLitModule(LightningModule):
             label_names=LABEL_LIST
         )
 
+        y_true = torch.flatten(true_labels)
+        preds = torch.flatten(true_preds)
+
         # log val metrics
-        acc = self.val_acc(true_preds, true_labels)
-        f1 = self.val_f1(true_preds, true_labels)
+        acc = self.val_acc(preds, y_true)
+        f1 = self.val_f1(preds, y_true)
 
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -121,20 +127,21 @@ class BertParsCitLitModule(LightningModule):
             label_names=LABEL_LIST
         )
 
+        y_true = torch.flatten(true_labels)
+        preds = torch.flatten(true_preds)
+
         # log test metrics
-        acc = self.test_acc(true_preds, true_labels)
-        f1 = self.test_f1(true_preds, true_labels)
-        confmat = self.conf_matrix(true_preds, true_labels)
+        acc = self.test_acc(preds, y_true)
+        f1 = self.test_f1(preds, y_true)
+        confmat = self.conf_matrix(preds, y_true).tolist()
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/f1", f1, on_step=False, on_epoch=True)
-        wandb.log({"conf_mat" : wandb.plot.confusion_matrix(
-            probs=None,
-            y_true=torch.flatten(true_labels).tolist(), 
-            preds=torch.flatten(true_preds).tolist(),
-            class_names=LABEL_LIST
-        )})
+        
+        plt.figure(figsize=(24, 24))
+        sn.heatmap(confmat, annot=True, xticklabels=LABEL_LIST, yticklabels=LABEL_LIST, fmt='d')
+        wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 

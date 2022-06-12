@@ -121,7 +121,7 @@ class BERTParsCitDataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             dataset=self.data_val,
-            batch_size=self.hparams.batch_size,
+            batch_size=10000,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
@@ -131,7 +131,7 @@ class BERTParsCitDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.hparams.batch_size,
+            batch_size=500,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
