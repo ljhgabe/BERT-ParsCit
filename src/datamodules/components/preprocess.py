@@ -134,8 +134,10 @@ def postprocess(input_ids, predictions, labels, label_names):
         merged_true_label = list(map(lambda l: int(label2id[Counter(l).most_common(1)[0][0]]), grouped_true_label))
         merged_true_prediction = list(map(lambda l: int(label2id[Counter(l).most_common(1)[0][0]]), grouped_true_prediction))
 
+        mapped_true_prediction = [7 if 8 <= l <= 10 else l for l in merged_true_prediction]
+        
         merged_true_labels.append(merged_true_label)
-        merged_true_predictions.append(merged_true_prediction)
+        merged_true_predictions.append(mapped_true_prediction)
 
     max_cols = max([len(lst) for lst in merged_true_labels])
 
