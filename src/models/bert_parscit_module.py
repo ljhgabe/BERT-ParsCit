@@ -35,21 +35,24 @@ class BertParsCitLitModule(LightningModule):
         self.tokenizer = bert_tokenizer
 
         # Calculating accuracy
-        self.train_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
-        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
-        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1)
+        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1)
+        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1)
 
-        # Calculating Micro F1 score
-        self.train_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro") 
-        self.val_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro")
-        self.test_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST) - 1, average="micro")
+        # Calculating Micro F1 score 
+        self.val_micro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="micro")
+        self.test_micro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="micro")
 
-        # Calculating confusion matrix
+        # Calculating Macro F1 score
+        self.val_macro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="macro")
+        self.test_macro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="macro")
+        
+        # Calculating testing confusion matrix
         self.conf_matrix = ConfusionMatrix(num_classes=len(LABEL_LIST))
 
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
-        self.val_f1_best = MaxMetric()
+        self.val_micro_f1_best = MaxMetric()
+        self.val_macro_f1_best = MaxMetric()
 
     def forward(self, x):
         return self.model(x)
@@ -69,10 +72,8 @@ class BertParsCitLitModule(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
 
-        # log train metrics (not needed)
-        # acc = self.train_acc(true_preds, true_targets)
+        # log train metrics
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        # self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
@@ -80,7 +81,6 @@ class BertParsCitLitModule(LightningModule):
         return {"loss": loss}
 
     def training_epoch_end(self, outputs: List[Any]):
-        # `outputs` is a list of dicts returned from `training_step()`
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -99,22 +99,28 @@ class BertParsCitLitModule(LightningModule):
 
         # log val metrics
         acc = self.val_acc(preds, y_true)
-        f1 = self.val_f1(preds, y_true)
+        micro_f1 = self.val_micro_f1(preds, y_true)
+        macro_f1 = self.val_macro_f1(preds, y_true)
 
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
-        self.log("val/f1", f1, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/micro_f1", micro_f1, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/macro_f1", macro_f1, on_step=False, on_epoch=True, prog_bar=True)
 
-        return {"loss": loss, "preds": true_preds, "labels": true_labels}
+        return {"loss": loss, "preds": preds, "labels": y_true}
 
     def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
         self.val_acc_best.update(acc)
         self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
-        f1 = self.val_f1.compute()
-        self.val_f1_best.update(f1)
-        self.log("val/f1_best", self.val_f1_best.compute(), on_epoch=True, prog_bar=True)
+        micro_f1 = self.val_micro_f1.compute()
+        self.val_micro_f1_best.update(micro_f1)
+        self.log("val/micro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
+
+        macro_f1 = self.val_macro_f1.compute()
+        self.val_macro_f1_best.update(macro_f1)
+        self.log("val/macro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         input_ids = batch["input_ids"]
@@ -132,31 +138,34 @@ class BertParsCitLitModule(LightningModule):
 
         # log test metrics
         acc = self.test_acc(preds, y_true)
-        f1 = self.test_f1(preds, y_true)
+        micro_f1 = self.test_micro_f1(preds, y_true)
+        macro_f1 = self.test_macro_f1(preds, y_true)
         confmat = self.conf_matrix(preds, y_true).tolist()
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
-        self.log("test/f1", f1, on_step=False, on_epoch=True)
+        self.log("test/micro_f1", micro_f1, on_step=False, on_epoch=True)
+        self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
         
         plt.figure(figsize=(24, 24))
         sn.heatmap(confmat, annot=True, xticklabels=LABEL_LIST, yticklabels=LABEL_LIST, fmt='d')
         wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
-        return {"loss": loss, "preds": true_preds, "labels": true_labels}
+        return {"loss": loss, "preds": preds, "labels": y_true}
 
     def test_epoch_end(self, outputs: List[Any]):
         pass
 
     def on_epoch_end(self):
         # reset metrics at the end of every epoch
-        # self.train_acc.reset()
         self.val_acc.reset()
         self.test_acc.reset()
 
-        # self.train_f1.reset()
-        self.val_f1.reset()
-        self.test_f1.reset()
+        self.val_micro_f1.reset()
+        self.test_micro_f1.reset()
+
+        self.val_macro_f1.reset()
+        self.test_macro_f1.reset()
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.

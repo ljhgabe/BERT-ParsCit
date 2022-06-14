@@ -38,6 +38,9 @@ class BERTParsCitDataModule(LightningDataModule):
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
 
+        self.val_size: int = 10000
+        self.test_size: int = 500
+
     @property
     def num_classes(self) -> int:
         return len(LABEL_LIST)
@@ -108,6 +111,9 @@ class BERTParsCitDataModule(LightningDataModule):
             self.data_val = tokenized_datasets["val"]
             self.data_test = tokenized_datasets["test"]
 
+            self.val_size = len(self.data_val)
+            self.test_size = len(self.data_test)
+
     def train_dataloader(self):
         return DataLoader(
             dataset=self.data_train,
@@ -121,7 +127,7 @@ class BERTParsCitDataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             dataset=self.data_val,
-            batch_size=10000,
+            batch_size=self.val_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
@@ -131,7 +137,7 @@ class BERTParsCitDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=500,
+            batch_size=self.test_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
