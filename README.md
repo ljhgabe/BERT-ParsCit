@@ -62,5 +62,5 @@ python train.py trainer.max_epochs=20 datamodule.batch_size=64
 To show the full stack trace for error occurred during training or testing
 
 ```bash
-HYDRA_FULL_ERROR python train.py
+HYDRA_FULL_ERROR=1 python train.py
 ```
