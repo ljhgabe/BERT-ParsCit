@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ddb291cd-be89-424c-ad1e-d59654a83095" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/.gitkeep" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +107,7 @@
       <workItem from="1654355371465" duration="42000" />
       <workItem from="1654355463242" duration="4765000" />
       <workItem from="1654869918725" duration="1162000" />
+      <workItem from="1655689477101" duration="330000" />
     </task>
     <servers />
   </component>

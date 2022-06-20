@@ -1,7 +1,7 @@
 
 <div align="center">
    
-# BERT-ParsCit
+# BERT ParsCit
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
@@ -14,7 +14,8 @@
 
 ## Description
 
-This is the repository of ParsCit-ParsCit and is under active development at National University of Singapore (NUS), Singapore. The project was built upon a [template by ashleve](https://github.com/ashleve/lightning-hydra-template).
+This is the repository of BERT ParsCit and is under active development at National University of Singapore (NUS), Singapore. The project was built upon a [template by ashleve](https://github.com/ashleve/lightning-hydra-template).
+BERT ParsCit is a BERT version of [Neural ParsCit](https://github.com/WING-NUS/Neural-ParsCit) built by researchers under [WING@NUS](https://wing.comp.nus.edu.sg/).
 
 ## How to run
 
@@ -26,8 +27,8 @@ git clone https://github.com/ljhgabe/BERT-ParsCit
 cd BERT-ParsCit
 
 # [OPTIONAL] create conda environment
-conda create -n parscit python=3.8
-conda activate parscit
+conda create -n myenv python=3.8
+conda activate myenv
 
 # install pytorch according to instructions
 # https://pytorch.org/get-started/
@@ -58,9 +59,8 @@ You can override any parameter from command line like this
 python train.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
 
-## FAQ
-Q. Why do I get error like `Error locating target 'src.models.bert_parscit_module.BertParsCitLitModule'` even though my file's location is correct?
-   
-A. Hydra may hide the full error stack trace even with `HYDRA_ERROR_FULL=1`. In this situation, the primary error source
-is compilation error such as importing a library that has not been downloaded. To displace the full error stack trace, 
-replace the codes using hydra to instantiate modules with your own ones.
+To show the full stack trace for error occurred during training or testing
+
+```bash
+HYDRA_FULL_ERROR python train.py
+```
