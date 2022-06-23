@@ -110,7 +110,7 @@ class BertParsCitLitModule(LightningModule):
         return {"loss": loss, "preds": preds, "labels": y_true}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute()  # get val accuracy from current epoch
+        acc = self.val_acc.compute()
         self.val_acc_best.update(acc)
         self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
@@ -157,14 +157,12 @@ class BertParsCitLitModule(LightningModule):
         pass
 
     def on_epoch_end(self):
-        # reset metrics at the end of every epoch
         self.val_acc.reset()
-        self.test_acc.reset()
-
         self.val_micro_f1.reset()
-        self.test_micro_f1.reset()
-
         self.val_macro_f1.reset()
+
+        self.test_acc.reset()
+        self.test_micro_f1.reset()
         self.test_macro_f1.reset()
 
     def configure_optimizers(self):

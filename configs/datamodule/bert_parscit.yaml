@@ -1,4 +1,4 @@
-_target_: src.datamodules.bert_parscit_datamodule.BERTParsCitDataModule
+_target_: src.datamodules.bert_parscit_datamodule.BertParsCitDataModule
 
 data_dir: ${data_dir} # data_dir is specified in config.yaml
 data_repo: "myvision/yuanchuan-synthetic-dataset-final"

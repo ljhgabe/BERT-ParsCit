@@ -1,20 +1,8 @@
-from typing import Optional, Tuple
-
-import datasets
-from datasets import Dataset, DatasetDict
-from pytorch_lightning import LightningDataModule
-from torch.utils.data import DataLoader
-from transformers import DataCollatorForTokenClassification
-from src.datamodules.components.class_label import LABEL_LIST, label2id
-from src.datamodules.components.preprocess import preprocess, tokenize_and_align_labels
+from src.datamodules.components.datamodule_config import DATA_CACHE_DIR, SYNTHETIC_DATASET_REPO
 from src.models.components.bert_tokenizer import bert_tokenizer
 
-SYNTHETIC_DATASET_REPO = "myvision/yuanchuan-synthetic-dataset-final"
 
-DATA_CACHE_DIR = "/data3/jiahe/synthetic-final/"
-
-
-class BertParsCitDataModule(LightningDataModule):
+class SyntheticDataModule(LightningDataModule):
 
     def __init__(
         self,
@@ -89,7 +77,7 @@ class BertParsCitDataModule(LightningDataModule):
             dataset_dict = DatasetDict()
             dataset_dict['train'] = selected_train_data
             dataset_dict['val'] = raw_testset # selected_val_data
-            # dataset_dict['test'] = raw_testset ## disabled for testing using cora 
+            # dataset_dict['test'] = raw_testset ## disabled for testing using cora
 
             processed_datasets = dataset_dict.map(
                 preprocess,
@@ -105,7 +93,7 @@ class BertParsCitDataModule(LightningDataModule):
                 batched=True,
                 remove_columns=processed_datasets["train"].column_names,
                 load_from_cache_file=True
-            )   
+            )
 
             self.data_train = tokenized_datasets["train"]
             self.data_val = tokenized_datasets["val"]
@@ -143,5 +131,3 @@ class BertParsCitDataModule(LightningDataModule):
             collate_fn=self.data_collator,
             shuffle=False,
         )
-
-
