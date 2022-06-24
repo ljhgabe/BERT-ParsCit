@@ -4,14 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ddb291cd-be89-424c-ad1e-d59654a83095" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/datamodules/synthetic_datamodule.py" afterDir="false" />
+    <list default="true" id="62609e31-3730-4d12-8cb6-e52ec32146fa" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/datamodules/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/synthetic_module.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/utils/bert_model_path.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/datamodule/bert_parscit.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/datamodule/bert_parscit.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datamodules/bert_parscit_datamodule.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/bert_parscit_datamodule.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/bert_parscit_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/bert_parscit_module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/callbacks/default.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/callbacks/default.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/datamodule/bert_parscit.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/datamodule/synthetic.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/datamodule/mnist.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/experiment/example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/experiment/synthetic.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/model/bert_parscit.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/model/bert_parscit.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/model/mnist.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/test.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/test.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/train.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/train.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datamodules/bert_parscit_datamodule.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datamodules/components/class_label.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/components/synthetic_label.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datamodules/components/datamodule_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/utils/datamodule_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datamodules/components/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/components/process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datamodules/synthetic_datamodule.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/synthetic_datamodule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/bert_parscit_module.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/components/bert_token_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/components/bert_token_classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/components/bert_tokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/components/bert_tokenizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/utils/bert_parscit_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/utils/bert_model_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/testing_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/testing_pipeline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/training_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/training_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,10 +51,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
-  </component>
-  <component name="ProjectId" id="2A6am4vXeDaQcVsHq2OGFPQG46n" />
+  <component name="ProjectId" id="2B0Es7kH4BR6xdvwuJRWe2OBogf" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -43,95 +60,38 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/models" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.project" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="PyConsoleOptionsProvider">
-    <option name="myPythonConsoleState">
-      <console-settings sdk-home="$PROJECT_DIR$/../miniconda3/envs/research/bin/python">
-        <option name="mySdkHome" value="$PROJECT_DIR$/../miniconda3/envs/research/bin/python" />
-      </console-settings>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.main">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="train" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/../miniconda3/envs/research/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.train" />
-      </list>
-    </recent_temporary>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/models" />
+      <recent name="$PROJECT_DIR$/src/models/components" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/models/utils" />
+      <recent name="$PROJECT_DIR$/src/models/components" />
+      <recent name="$PROJECT_DIR$/src/datamodules/utils" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ddb291cd-be89-424c-ad1e-d59654a83095" name="Changes" comment="" />
-      <created>1654332645551</created>
+      <changelist id="62609e31-3730-4d12-8cb6-e52ec32146fa" name="Changes" comment="" />
+      <created>1656034806373</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1654332645551</updated>
-      <workItem from="1654332647736" duration="7394000" />
-      <workItem from="1654355340950" duration="17000" />
-      <workItem from="1654355371465" duration="42000" />
-      <workItem from="1654355463242" duration="4765000" />
-      <workItem from="1654869918725" duration="1162000" />
-      <workItem from="1655689477101" duration="7230000" />
-      <workItem from="1655891137827" duration="680000" />
-      <workItem from="1655891920919" duration="2907000" />
+      <updated>1656034806373</updated>
+      <workItem from="1656034808152" duration="7310000" />
+      <workItem from="1656050885327" duration="7937000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/BERT_ParsCit$train.coverage" NAME="train Coverage Results" MODIFIED="1654355712409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

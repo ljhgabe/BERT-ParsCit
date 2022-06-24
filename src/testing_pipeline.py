@@ -12,15 +12,6 @@ log = utils.get_logger(__name__)
 
 
 def test(config: DictConfig) -> None:
-    """Contains minimal example of the testing pipeline. Evaluates given checkpoint on a testset.
-
-    Args:
-        config (DictConfig): Configuration composed by Hydra.
-
-    Returns:
-        None
-    """
-
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)

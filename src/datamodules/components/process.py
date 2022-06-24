@@ -2,8 +2,9 @@ import bs4
 import torch
 from bs4 import BeautifulSoup
 from collections import Counter
-from src.datamodules.components.class_label import LABEL_LIST, label2id
+from src.datamodules.components.synthetic_label import LABEL_NAMES, label2id
 from src.models.components.bert_tokenizer import bert_tokenizer
+
 
 def preprocess(examples):
     all_ref_strings = examples["content"]
@@ -141,8 +142,8 @@ def postprocess(input_ids, predictions, labels, label_names):
 
     max_cols = max([len(lst) for lst in merged_true_labels])
 
-    padded_true_preds = [lst + [len(LABEL_LIST) - 1] * (max_cols - len(lst)) for lst in merged_true_labels]
-    padded_true_labels = [lst + [len(LABEL_LIST) - 1] * (max_cols - len(lst)) for lst in merged_true_predictions]
+    padded_true_preds = [lst + [len(LABEL_NAMES) - 1] * (max_cols - len(lst)) for lst in merged_true_labels]
+    padded_true_labels = [lst + [len(LABEL_NAMES) - 1] * (max_cols - len(lst)) for lst in merged_true_predictions]
     
     true_preds = torch.LongTensor(padded_true_preds)
     true_labels = torch.LongTensor(padded_true_labels)

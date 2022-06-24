@@ -1,111 +1,88 @@
-from src.datamodules.components.datamodule_config import DATA_CACHE_DIR, SYNTHETIC_DATASET_REPO
+import datasets
+from datasets import Dataset, DatasetDict
+from transformers import DataCollatorForTokenClassification
+
+from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader
+
+from src.datamodules.components.synthetic_label import num_labels, label2id
+from src.datamodules.utils.datamodule_path import DATA_CACHE_DIR, SYNTHETIC_DATASET_REPO
+from src.datamodules.components.process import preprocess, tokenize_and_align_labels
 from src.models.components.bert_tokenizer import bert_tokenizer
+from typing import Optional, Tuple
 
 
 class SyntheticDataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_dir: str = "data/",
         data_repo: str = SYNTHETIC_DATASET_REPO,
-        train_val_split: Tuple[int, int] = (50000, 5000),
-        batch_size: int = 8,
+        train_val_test_split: Tuple[int] = (100_000, 5_000, 10_000),
+        train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
         data_cache_dir: str = DATA_CACHE_DIR,
         seed: int = 777
     ):
         super().__init__()
-
-        # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
-
-        self.data_collator = DataCollatorForTokenClassification(tokenizer=bert_tokenizer)
-
+        self.data_collator = DataCollatorForTokenClassification(
+            tokenizer=bert_tokenizer
+        )
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
 
-        self.val_size: int = 10000
-        self.test_size: int = 500
-
     @property
     def num_classes(self) -> int:
-        return len(LABEL_LIST)
+        return num_labels
 
-    def prepare_data(self):
-        """Download data if needed.
+    def prepare_data(self) -> DatasetDict:
+        raw_train_val_set = datasets.load_dataset(
+            self.hparams.data_repo,
+            split="train",
+            cache_dir=self.hparams.data_cache_dir
+        )
+        raw_test_set = datasets.load_dataset(
+            self.hparams.data_repo,
+            split="test",
+            cache_dir=self.hparams.data_cache_dir
+        )
+        shuffled_raw_train_val_set = raw_train_val_set.shuffle(seed=self.hparams.seed)
+        selected_indices = list(range(self.hparams.train_val_test_split[0] + self.hparams.train_val_test_split[1]))
+        selected_train_data = shuffled_raw_train_val_set.select(selected_indices[:self.hparams.train_val_split[0]])
+        selected_val_data = shuffled_raw_train_val_set.select(selected_indices[self.hparams.train_val_split[0]:])
+        selected_test_data = raw_test_set
 
-        This method is called only from a single GPU.
-        Do not use it to assign state (self.x = y).
-        """
-        pass
+        dataset_dict = DatasetDict()
+        dataset_dict['train'] = selected_train_data
+        dataset_dict['val'] = selected_val_data
+        dataset_dict['test'] = selected_test_data
+        return dataset_dict
 
     def setup(self, stage: Optional[str] = None):
-        """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
-
-        This method is called by lightning when doing `trainer.fit()` and `trainer.test()`,
-        so be careful not to execute the random split twice! The `stage` can be used to
-        differentiate whether it's called before trainer.fit()` or `trainer.test()`.
-        """
-
-        # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
-            raw_trainset = datasets.load_dataset(
-                self.hparams.data_repo,
-                split="train",
-                cache_dir=self.hparams.data_cache_dir
-            )
-
-            raw_testset = datasets.load_dataset(
-                self.hparams.data_repo,
-                split="test",
-                cache_dir=self.hparams.data_cache_dir
-            )
-
-            raw_cora = datasets.load_dataset(
-                "myvision/cora-test",
-                split="train",
-                cache_dir=self.hparams.data_cache_dir
-            )
-
-            shuffled_raw_trainset = raw_trainset.shuffle(seed=self.hparams.seed)
-            selected_indices = list(range(sum(self.hparams.train_val_split)))
-            selected_train_data = shuffled_raw_trainset.select(selected_indices[:self.hparams.train_val_split[0]])
-            selected_val_data = shuffled_raw_trainset.select(selected_indices[self.hparams.train_val_split[0]:])
-
-            dataset_dict = DatasetDict()
-            dataset_dict['train'] = selected_train_data
-            dataset_dict['val'] = raw_testset # selected_val_data
-            # dataset_dict['test'] = raw_testset ## disabled for testing using cora
-
+            dataset_dict = self.prepare_data()
             processed_datasets = dataset_dict.map(
                 preprocess,
                 batched=True,
                 remove_columns=dataset_dict["train"].column_names,
                 load_from_cache_file=True
             )
-
-            processed_datasets["test"] = raw_cora
-
             tokenized_datasets = processed_datasets.map(
                 lambda x: tokenize_and_align_labels(x, label2id),
                 batched=True,
                 remove_columns=processed_datasets["train"].column_names,
                 load_from_cache_file=True
             )
-
             self.data_train = tokenized_datasets["train"]
             self.data_val = tokenized_datasets["val"]
             self.data_test = tokenized_datasets["test"]
 
-            self.val_size = len(self.data_val)
-            self.test_size = len(self.data_test)
-
     def train_dataloader(self):
         return DataLoader(
             dataset=self.data_train,
-            batch_size=self.hparams.batch_size,
+            batch_size=self.hparams.train_batch_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
@@ -115,7 +92,7 @@ class SyntheticDataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             dataset=self.data_val,
-            batch_size=self.val_size,
+            batch_size=self.hparams.train_val_test_split[1],
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
@@ -125,7 +102,7 @@ class SyntheticDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.test_size,
+            batch_size=self.hparams.train_val_test_split[2],
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,

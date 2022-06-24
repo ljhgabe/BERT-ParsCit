@@ -1,4 +1,4 @@
-LABEL_LIST = [
+LABEL_NAMES = [
     'citation-number',
     'collection-title',
     'container-title',
@@ -21,5 +21,7 @@ LABEL_LIST = [
     'other'
 ]
 
-id2label = {str(i): label for i, label in enumerate(LABEL_LIST)}
+num_labels = len(LABEL_NAMES)
+
+id2label = {str(i): label for i, label in enumerate(LABEL_NAMES)}
 label2id = {v: k for k, v in id2label.items()}

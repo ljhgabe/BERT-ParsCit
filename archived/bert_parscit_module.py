@@ -11,11 +11,10 @@ from torchmetrics import F1Score
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
-from src.models.components.bert_token_classifier import BertTokenClassifier
-from src.models.components.bert_tokenizer import bert_tokenizer
+from src.models.components.bert_tokenclassification_model import BertTokenClassifier
 
-from src.datamodules.components.class_label import LABEL_LIST
-from src.datamodules.components.preprocess import postprocess
+from src.datamodules.components.synthetic_label import num_labels
+from src.datamodules.components.process import postprocess
 
 
 class BertParsCitLitModule(LightningModule):
@@ -26,30 +25,18 @@ class BertParsCitLitModule(LightningModule):
         lr: float = 2e-5,
     ):
         super().__init__()
-
-        # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
-
         self.model = model
-        self.tokenizer = bert_tokenizer
 
-        # Calculating accuracy
-        self.val_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1)
-        self.test_acc = Accuracy(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1)
+        self.val_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels-1)
+        self.test_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels - 1)
+        self.val_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
+        self.test_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
+        self.val_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
+        self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
 
-        # Calculating Micro F1 score 
-        self.val_micro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="micro")
-        self.test_micro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="micro")
+        self.conf_matrix = ConfusionMatrix(num_classes=num_labels)
 
-        # Calculating Macro F1 score
-        self.val_macro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="macro")
-        self.test_macro_f1 = F1Score(num_classes=len(LABEL_LIST), ignore_index=len(LABEL_LIST)-1, average="macro")
-        
-        # Calculating testing confusion matrix
-        self.conf_matrix = ConfusionMatrix(num_classes=len(LABEL_LIST))
-
-        # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
         self.val_micro_f1_best = MaxMetric()
         self.val_macro_f1_best = MaxMetric()
@@ -58,9 +45,9 @@ class BertParsCitLitModule(LightningModule):
         return self.model(x)
 
     def on_train_start(self):
-        # by default lightning executes validation step sanity checks before training starts,
-        # so we need to make sure val_acc_best doesn't store accuracy from these checks
         self.val_acc_best.reset()
+        self.val_macro_f1_best.reset()
+        self.val_micro_f1_best.reset()
 
     def step(self, batch: Any):
         inputs, labels = batch, batch["labels"]
@@ -91,7 +78,7 @@ class BertParsCitLitModule(LightningModule):
             input_ids=input_ids,
             predictions=preds,
             labels=labels,
-            label_names=LABEL_LIST
+            label_names=LABEL_NAMES
         )
 
         y_true = torch.flatten(true_labels)
@@ -130,7 +117,7 @@ class BertParsCitLitModule(LightningModule):
             input_ids=input_ids,
             predictions=preds,
             labels=labels,
-            label_names=LABEL_LIST
+            label_names=LABEL_NAMES
         )
 
         y_true = torch.flatten(true_labels)
@@ -148,7 +135,7 @@ class BertParsCitLitModule(LightningModule):
         self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
         
         plt.figure(figsize=(24, 24))
-        sn.heatmap(confmat, annot=True, xticklabels=LABEL_LIST, yticklabels=LABEL_LIST, fmt='d')
+        sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
         wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
         return {"loss": loss, "preds": preds, "labels": y_true}

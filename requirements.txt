@@ -31,9 +31,11 @@ pytest~=7.1.2
 sh~=1.14.2
 pudb            # debugger
 
-seaborn
+seaborn~=0.11.2
 omegaconf~=2.2.2
 transformers~=4.19.2
 packaging~=21.3
 datasets~=2.2.2
 beautifulsoup4~=4.9.0
+
+matplotlib~=3.5.1

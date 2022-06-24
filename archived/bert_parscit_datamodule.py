@@ -5,9 +5,9 @@ from datasets import Dataset, DatasetDict
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 from transformers import DataCollatorForTokenClassification
-from src.datamodules.components.class_label import LABEL_LIST, label2id
-from src.datamodules.components.preprocess import preprocess, tokenize_and_align_labels
-from src.models.components.bert_tokenizer import bert_tokenizer
+from src.datamodules.components.synthetic_label import LABEL_NAMES, label2id
+from src.datamodules.components.process import preprocess, tokenize_and_align_labels
+# from src.models.components.bert_tokenizer import bert_tokenizer
 
 SYNTHETIC_DATASET_REPO = "myvision/yuanchuan-synthetic-dataset-final"
 
@@ -43,7 +43,7 @@ class BertParsCitDataModule(LightningDataModule):
 
     @property
     def num_classes(self) -> int:
-        return len(LABEL_LIST)
+        return len(LABEL_NAMES)
 
     def prepare_data(self):
         """Download data if needed.

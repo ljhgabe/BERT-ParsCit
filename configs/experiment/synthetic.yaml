@@ -4,8 +4,8 @@
 # python train.py experiment=example
 
 defaults:
-  - override /datamodule: bert_parscit.yaml
-  - override /model: bert_parscit.yaml
+  - override /datamodule: synthetic.yaml
+  - override /model: synthetic.yaml
   - override /callbacks: default.yaml
   - override /logger: null
   - override /trainer: default.yaml
@@ -25,14 +25,20 @@ trainer:
   max_epochs: 10
   gradient_clip_val: 0.5
 
-model:
+module:
   lr: 2e-5
-  net:
-    model_checkpoint: "scibert_scivocab_uncased"
-    cache_dir: "/data3/jiahe/"
+  model:
+    model_checkpoint: "allenai/scibert_scivocab_uncased"
+    output_size: 20
+    cache_dir: "/data3/jiahe/parscit/"
 
 datamodule:
+  data_repo: "myvision/yuanchuan-synthetic-dataset-final"
   batch_size: 8
+  train_val_test_split: [ 100_000, 5_000, 10_000 ]
+  num_workers: 0
+  pin_memory: False
+  data_cache_dir: "/data3/jiahe/synthetic-final/"
 
 logger:
   wandb:

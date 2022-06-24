@@ -3,8 +3,8 @@
 # specify here default evaluation configuration
 defaults:
   - _self_
-  - datamodule: bert_parscit.yaml # choose the datamodule for evaluation
-  - model: bert_parscit.yaml
+  - datamodule: synthetic.yaml # choose the datamodule for evaluation
+  - model: synthetic.yaml
   - callbacks: null
   - logger: null
   - trainer: default.yaml
