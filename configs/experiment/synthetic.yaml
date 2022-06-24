@@ -18,8 +18,6 @@ name: "bert_token_classifier"
 
 seed: 777
 
-# cache_dir: "/data3/jiahe/synthetic"
-
 trainer:
   min_epochs: 5
   max_epochs: 10
@@ -34,8 +32,8 @@ module:
 
 datamodule:
   data_repo: "myvision/yuanchuan-synthetic-dataset-final"
-  batch_size: 8
-  train_val_test_split: [ 100_000, 5_000, 10_000 ]
+  train_batch_size: 8
+  train_val_test_split: [ 1_000, 5_000, 10_000 ]
   num_workers: 0
   pin_memory: False
   data_cache_dir: "/data3/jiahe/synthetic-final/"
