@@ -5,23 +5,22 @@ from transformers import DataCollatorForTokenClassification
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 
-from src.datamodules.components.synthetic_label import num_labels, label2id
-from src.datamodules.utils.datamodule_path import SYNTHETIC_DATA_CACHE_DIR, SYNTHETIC_DATASET_REPO
+from src.datamodules.components.cora_label import num_labels, label2id
+from src.datamodules.utils.datamodule_path import CORA_DATA_CACHE_DIR, CORA_DATASET_REPO
 from src.datamodules.components.process import preprocess, tokenize_and_align_labels
 from src.models.components.bert_tokenizer import bert_tokenizer
-from typing import Optional, Tuple
+from typing import Optional
 
 
-class SyntheticDataModule(LightningDataModule):
+class CoraDataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_repo: str = SYNTHETIC_DATASET_REPO,
-        train_val_test_split: Tuple[int] = (100_000, 5_000, 10_000),
+        data_repo: str = CORA_DATASET_REPO,
         train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
-        data_cache_dir: str = SYNTHETIC_DATA_CACHE_DIR,
+        data_cache_dir: str = CORA_DATA_CACHE_DIR,
         seed: int = 777
     ):
         super().__init__()
@@ -38,35 +37,19 @@ class SyntheticDataModule(LightningDataModule):
         return num_labels
 
     def prepare_data(self) -> DatasetDict:
-        raw_train_val_set = datasets.load_dataset(
+        raw_datasets = datasets.load_dataset(
             self.hparams.data_repo,
-            split="train",
             cache_dir=self.hparams.data_cache_dir
         )
-        raw_test_set = datasets.load_dataset(
-            self.hparams.data_repo,
-            split="test",
-            cache_dir=self.hparams.data_cache_dir
-        )
-        shuffled_raw_train_val_set = raw_train_val_set.shuffle(seed=self.hparams.seed)
-        selected_indices = list(range(self.hparams.train_val_test_split[0] + self.hparams.train_val_test_split[1]))
-        selected_train_data = shuffled_raw_train_val_set.select(selected_indices[:self.hparams.train_val_split[0]])
-        selected_val_data = shuffled_raw_train_val_set.select(selected_indices[self.hparams.train_val_split[0]:])
-        selected_test_data = raw_test_set
-
-        dataset_dict = DatasetDict()
-        dataset_dict['train'] = selected_train_data
-        dataset_dict['val'] = selected_val_data
-        dataset_dict['test'] = selected_test_data
-        return dataset_dict
+        return raw_datasets
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_train and not self.data_val and not self.data_test:
-            dataset_dict = self.prepare_data()
-            processed_datasets = dataset_dict.map(
+            raw_datasets = self.prepare_data()
+            processed_datasets = raw_datasets.map(
                 preprocess,
                 batched=True,
-                remove_columns=dataset_dict["train"].column_names,
+                remove_columns=raw_datasets["train"].column_names,
                 load_from_cache_file=True
             )
             tokenized_datasets = processed_datasets.map(

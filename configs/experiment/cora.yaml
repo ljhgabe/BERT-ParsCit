@@ -4,8 +4,8 @@
 # python train.py experiment=example
 
 defaults:
-  - override /datamodule: synthetic.yaml
-  - override /model: synthetic.yaml
+  - override /datamodule: cora.yaml
+  - override /model: cora.yaml
   - override /callbacks: default.yaml
   - override /logger: null
   - override /trainer: default.yaml
@@ -31,13 +31,12 @@ module:
     cache_dir: "/data3/jiahe/parscit/"
 
 datamodule:
-  data_repo: "myvision/yuanchuan-synthetic-dataset-final"
+  data_repo: "myvision/cora-dataset-final"
   train_batch_size: 8
-  train_val_test_split: [ 1_000, 5_000, 10_000 ]
   num_workers: 0
   pin_memory: False
-  data_cache_dir: "/data3/jiahe/synthetic-final/"
+  data_cache_dir: "/data3/jiahe/cora/"
 
 logger:
   wandb:
-    tags: ["synthetic", "${name}"]
+    tags: ["cora", "${name}"]

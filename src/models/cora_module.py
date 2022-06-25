@@ -13,11 +13,11 @@ from torchmetrics.classification.accuracy import Accuracy
 
 from src.models.components.bert_token_classifier import BertTokenClassifier
 
-from src.datamodules.components.synthetic_label import num_labels, LABEL_NAMES
+from src.datamodules.components.cora_label import num_labels, LABEL_NAMES
 from src.datamodules.components.process import postprocess
 
 
-class SyntheticLitModule(LightningModule):
+class CoraLitModule(LightningModule):
 
     def __init__(
         self,

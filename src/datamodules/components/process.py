@@ -2,7 +2,6 @@ import bs4
 import torch
 from bs4 import BeautifulSoup
 from collections import Counter
-from src.datamodules.components.synthetic_label import LABEL_NAMES, label2id
 from src.models.components.bert_tokenizer import bert_tokenizer
 
 
@@ -87,6 +86,8 @@ def tokenize_and_align_labels(examples, label2id):
 
 
 def postprocess(input_ids, predictions, labels, label_names):
+    label2id = {label: str(i) for i, label in enumerate(labels)}
+
     true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
     raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
     tokens = [string.split() for string in raw_strings]
@@ -135,15 +136,15 @@ def postprocess(input_ids, predictions, labels, label_names):
         merged_true_label = list(map(lambda l: int(label2id[Counter(l).most_common(1)[0][0]]), grouped_true_label))
         merged_true_prediction = list(map(lambda l: int(label2id[Counter(l).most_common(1)[0][0]]), grouped_true_prediction))
 
-        mapped_true_prediction = [7 if 8 <= l <= 10 else l for l in merged_true_prediction]
+        # mapped_true_prediction = [7 if 8 <= l <= 10 else l for l in merged_true_prediction]
         
         merged_true_labels.append(merged_true_label)
-        merged_true_predictions.append(mapped_true_prediction)
+        merged_true_predictions.append(merged_true_prediction)
 
     max_cols = max([len(lst) for lst in merged_true_labels])
 
-    padded_true_preds = [lst + [len(LABEL_NAMES) - 1] * (max_cols - len(lst)) for lst in merged_true_labels]
-    padded_true_labels = [lst + [len(LABEL_NAMES) - 1] * (max_cols - len(lst)) for lst in merged_true_predictions]
+    padded_true_preds = [lst + [len(label_names) - 1] * (max_cols - len(lst)) for lst in merged_true_labels]
+    padded_true_labels = [lst + [len(label_names) - 1] * (max_cols - len(lst)) for lst in merged_true_predictions]
     
     true_preds = torch.LongTensor(padded_true_preds)
     true_labels = torch.LongTensor(padded_true_labels)
