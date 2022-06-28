@@ -13,7 +13,6 @@ from typing import Optional, Tuple
 
 
 class SyntheticDataModule(LightningDataModule):
-
     def __init__(
         self,
         data_repo: str = SYNTHETIC_DATASET_REPO,

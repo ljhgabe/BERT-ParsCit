@@ -28,7 +28,7 @@ class BertTokenClassifier(nn.Module):
         loss = None
         if labels is not None:
             loss_fct = nn.CrossEntropyLoss()
-            loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
+            loss = loss_fct(logits.view(-1, self.output_size), labels.view(-1))
         return TokenClassifierOutput(
             loss=loss,
             logits=logits,

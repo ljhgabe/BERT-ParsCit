@@ -13,7 +13,6 @@ from typing import Optional
 
 
 class CoraDataModule(LightningDataModule):
-
     def __init__(
         self,
         data_repo: str = CORA_DATASET_REPO,

@@ -18,7 +18,6 @@ from src.datamodules.components.process import postprocess
 
 
 class SyntheticLitModule(LightningModule):
-
     def __init__(
         self,
         model: BertTokenClassifier,

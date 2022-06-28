@@ -18,7 +18,6 @@ from src.datamodules.components.process import postprocess
 
 
 class CoraLitModule(LightningModule):
-
     def __init__(
         self,
         model: BertTokenClassifier,
