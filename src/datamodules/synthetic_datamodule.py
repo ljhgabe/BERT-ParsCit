@@ -49,8 +49,8 @@ class SyntheticDataModule(LightningDataModule):
         )
         shuffled_raw_train_val_set = raw_train_val_set.shuffle(seed=self.hparams.seed)
         selected_indices = list(range(self.hparams.train_val_test_split[0] + self.hparams.train_val_test_split[1]))
-        selected_train_data = shuffled_raw_train_val_set.select(selected_indices[:self.hparams.train_val_split[0]])
-        selected_val_data = shuffled_raw_train_val_set.select(selected_indices[self.hparams.train_val_split[0]:])
+        selected_train_data = shuffled_raw_train_val_set.select(selected_indices[:self.hparams.train_val_test_split[0]])
+        selected_val_data = shuffled_raw_train_val_set.select(selected_indices[self.hparams.train_val_test_split[0]:])
         selected_test_data = raw_test_set
 
         dataset_dict = DatasetDict()
