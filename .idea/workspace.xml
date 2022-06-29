@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="62609e31-3730-4d12-8cb6-e52ec32146fa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/BERT-ParsCit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BERT-ParsCit.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/datamodule/cora.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/datamodule/cora.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +71,7 @@
       <workItem from="1656336568694" duration="201000" />
       <workItem from="1656336773767" duration="26000" />
       <workItem from="1656336815746" duration="391000" />
-      <workItem from="1656337211412" duration="2122000" />
+      <workItem from="1656337211412" duration="2710000" />
     </task>
     <servers />
   </component>

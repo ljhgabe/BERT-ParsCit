@@ -5,4 +5,4 @@ train_batch_size: 8
 train_val_test_split: [1_000, 5_000, 10_000]
 num_workers: 0
 pin_memory: False
-data_cache_dir:  "/data3/jiahe/synthetic-final/"
+data_cache_dir:  "/ssd1/jiahe/synthetic-final/"
