@@ -18,20 +18,20 @@ class BertTokenClassifier(nn.Module):
             model_checkpoint,
             cache_dir=cache_dir,
         )
+        self.output_size = output_size
         self.dropout = nn.Dropout(0.1)
         self.classifier = nn.Linear(in_features=768, out_features=output_size, bias=True)
 
-    def forward(self, input_ids=None, attention_mask=None, labels=None):
+    def forward(self, input_ids=None, token_type_ids=None, attention_mask=None, labels=None):
+        # input_ids, attention_mask, labels = inputs["input_ids"], inputs["attention_mask"], inputs["labels"]
         outputs = self.bert_embedder(input_ids, attention_mask=attention_mask)
         outputs = self.dropout(outputs[0])
-        logits = self.classifier(outputs[:, 0, :].view(-1, 768))
+        logits = self.classifier(outputs)
         loss = None
         if labels is not None:
             loss_fct = nn.CrossEntropyLoss()
             loss = loss_fct(logits.view(-1, self.output_size), labels.view(-1))
         return TokenClassifierOutput(
             loss=loss,
-            logits=logits,
-            hidden_states=outputs.hidden_states,
-            attentions=outputs.attentions
+            logits=logits
         )

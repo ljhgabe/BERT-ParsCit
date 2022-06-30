@@ -86,7 +86,7 @@ def tokenize_and_align_labels(examples, label2id):
 
 
 def postprocess(input_ids, predictions, labels, label_names):
-    label2id = {label: str(i) for i, label in enumerate(labels)}
+    label2id = {label: str(i) for i, label in enumerate(label_names)}
 
     true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
     raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]

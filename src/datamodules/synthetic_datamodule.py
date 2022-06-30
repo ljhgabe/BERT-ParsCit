@@ -16,7 +16,7 @@ class SyntheticDataModule(LightningDataModule):
     def __init__(
         self,
         data_repo: str = SYNTHETIC_DATASET_REPO,
-        train_val_test_split: Tuple[int] = (100_000, 5_000, 10_000),
+        train_val_test_split: Tuple[int] = (1_000, 5_000, 10_000),
         train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -91,7 +91,7 @@ class SyntheticDataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             dataset=self.data_val,
-            batch_size=self.hparams.train_val_test_split[1],
+            batch_size=self.hparams.train_batch_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
@@ -101,7 +101,7 @@ class SyntheticDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.hparams.train_val_test_split[2],
+            batch_size=self.hparams.train_batch_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,

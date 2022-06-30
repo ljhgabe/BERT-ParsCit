@@ -4,5 +4,5 @@ data_repo: "myvision/yuanchuan-synthetic-dataset-final"
 train_batch_size: 8
 train_val_test_split: [1_000, 5_000, 10_000]
 num_workers: 0
-pin_memory: False
+pin_memory: True
 data_cache_dir:  "/ssd1/jiahe/synthetic-final/"
