@@ -35,8 +35,8 @@ class SyntheticLitModule(LightningModule):
         # self.val_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
         # self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
 
-        self.conf_matrix = ConfusionMatrix(num_classes=num_labels).to(torch.device("cuda", 0))
-
+        self.conf_matrix = ConfusionMatrix(num_classes=num_labels).to(torch.device("cpu"))
+        
         self.val_acc_best = MaxMetric()
         self.val_micro_f1_best = MaxMetric()
         # self.val_macro_f1_best = MaxMetric()
@@ -101,6 +101,9 @@ class SyntheticLitModule(LightningModule):
         # self.log("val/macro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
+
+        # wandb.init(project="scibert-synthetic", config=config)
+
         loss, preds, labels = self.step(batch)
         input_ids = batch["input_ids"]
         true_preds, true_labels = postprocess(
@@ -110,12 +113,18 @@ class SyntheticLitModule(LightningModule):
             label_names=LABEL_NAMES
         )
 
-        true_labels = torch.flatten(true_labels)
-        true_preds = torch.flatten(true_preds)
+
+        true_labels = torch.flatten(true_labels).to(torch.device("cuda", 0))
+        true_preds = torch.flatten(true_preds).to(torch.device("cuda", 0))
 
         acc = self.test_acc(true_preds, true_labels)
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
         # macro_f1 = self.test_macro_f1(true_preds, true_labels)
+
+        print(self.conf_matrix.device)
+        print(true_preds.device)
+        print(true_labels.device)
+        print(self.test_micro_f1.device)
         confmat = self.conf_matrix(true_preds, true_labels).tolist()
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)

@@ -4,7 +4,7 @@ wandb:
   _target_: pytorch_lightning.loggers.wandb.WandbLogger
   project: "scibert-synthetic"
   # name: ${name}
-  save_dir: "/data3/jiahe/logs"
+  save_dir: "/ssd1/jiahe/logs"
   offline: False # set True to store all logs only locally
   id: null # pass correct id to resume experiment!
   entity: "ljhgabe"  # set to name of your wandb team

@@ -4,5 +4,5 @@ lr: 2e-5
 model:
   _target_: src.models.components.bert_token_classifier.BertTokenClassifier
   model_checkpoint: "allenai/scibert_scivocab_uncased"
-  output_size: 20
+  output_size: 19
   cache_dir: "/ssd1/jiahe/parscit/"
