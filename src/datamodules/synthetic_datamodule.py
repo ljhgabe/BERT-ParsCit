@@ -16,7 +16,7 @@ class SyntheticDataModule(LightningDataModule):
     def __init__(
         self,
         data_repo: str = SYNTHETIC_DATASET_REPO,
-        train_val_test_split: Tuple[int] = (1_000, 5_000, 10_000),
+        train_val_test_split: Tuple[int] = (100_000, 5_000, 10_000),
         train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
