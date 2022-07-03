@@ -1,4 +1,4 @@
-_target_: src.datamodules.synthetic_datamodule.CoraDataModule
+_target_: src.datamodules.cora_datamodule.CoraDataModule
 
 data_repo: "myvision/cora-dataset-final"
 train_batch_size: 8

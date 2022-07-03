@@ -44,13 +44,7 @@ class CoraDataModule(LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_train and not self.data_val and not self.data_test:
-            raw_datasets = self.prepare_data()
-            processed_datasets = raw_datasets.map(
-                preprocess,
-                batched=True,
-                remove_columns=raw_datasets["train"].column_names,
-                load_from_cache_file=True
-            )
+            processed_datasets = self.prepare_data()
             tokenized_datasets = processed_datasets.map(
                 lambda x: tokenize_and_align_labels(x, label2id),
                 batched=True,
@@ -84,7 +78,7 @@ class CoraDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.hparams.train_val_test_split[2],
+            batch_size=500,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,

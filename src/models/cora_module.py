@@ -26,12 +26,14 @@ class CoraLitModule(LightningModule):
         super().__init__()
         self.save_hyperparameters(logger=False)
 
+        self.model = model
+
         self.val_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels-1)
         self.test_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels - 1)
         self.val_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
         self.test_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
         # self.val_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
-        # self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
+        self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
 
         self.conf_matrix = ConfusionMatrix(num_classes=num_labels)
 
@@ -113,14 +115,14 @@ class CoraLitModule(LightningModule):
 
         acc = self.test_acc(true_preds, true_labels)
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
-        # macro_f1 = self.test_macro_f1(true_preds, true_labels)
+        macro_f1 = self.test_macro_f1(true_preds, true_labels)
 
         confmat = self.conf_matrix(true_preds, true_labels).tolist()
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/micro_f1", micro_f1, on_step=False, on_epoch=True)
-        # self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
+        self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
         
         plt.figure(figsize=(24, 24))
         sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
@@ -136,7 +138,7 @@ class CoraLitModule(LightningModule):
         self.val_micro_f1.reset()
         self.test_micro_f1.reset()
         # self.val_macro_f1.reset()
-        # self.test_macro_f1.reset()
+        self.test_macro_f1.reset()
 
     def configure_optimizers(self):
         return torch.optim.AdamW(
