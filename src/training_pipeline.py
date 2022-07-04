@@ -2,6 +2,7 @@ import os
 from typing import List, Optional
 
 import hydra
+import torch
 from omegaconf import DictConfig
 from pytorch_lightning import (
     Callback,
@@ -103,7 +104,7 @@ def train(config: DictConfig) -> Optional[float]:
         logger=logger,
     )
     
-    model.model.bert_embedder.save_pretrained("/ssd1/jiahe/pretrained/scibert-synthetic-uncased-100k")
+    torch.save(model.model.state_dict(), "/ssd1/jiahe/pretrained/scibert-synthetic-uncased-full-100k")
 
     # Print path to best checkpoint
     if not config.trainer.get("fast_dev_run") and config.get("train"):
