@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from transformers import AutoModel
 from transformers.modeling_outputs import TokenClassifierOutput
@@ -20,11 +21,11 @@ class BertTokenClassifier(nn.Module):
         )
         self.output_size = output_size
         self.dropout = nn.Dropout(0.1)
-        self.classifier = nn.Linear(in_features=768, out_features=output_size, bias=True)
+        self.classifier = nn.Linear(in_features=19, out_features=output_size, bias=True)
 
     def forward(self, input_ids=None, token_type_ids=None, attention_mask=None, labels=None):
         # input_ids, attention_mask, labels = inputs["input_ids"], inputs["attention_mask"], inputs["labels"]
-        outputs = self.bert_embedder(input_ids, attention_mask=attention_mask)
+        outputs = self.bert_embedder(inputs)
         outputs = self.dropout(outputs[0])
         logits = self.classifier(outputs)
         loss = None
