@@ -1,7 +1,7 @@
 from torch import nn
 from transformers import AutoModel
 from transformers.modeling_outputs import TokenClassifierOutput
-from src.datamodules.components.synthetic_label import num_labels
+from src.datamodules.components.cora_label import num_labels
 from src.models.utils.bert_model_config import BERT_MODEL_CHECKPOINT
 from src.models.utils.bert_model_path import MODEL_CACHE_DIR
 
@@ -23,7 +23,6 @@ class BertTokenClassifier(nn.Module):
         self.classifier = nn.Linear(in_features=768, out_features=output_size, bias=True)
 
     def forward(self, input_ids=None, token_type_ids=None, attention_mask=None, labels=None):
-        # input_ids, attention_mask, labels = inputs["input_ids"], inputs["attention_mask"], inputs["labels"]
         outputs = self.bert_embedder(input_ids, attention_mask=attention_mask)
         outputs = self.dropout(outputs[0])
         logits = self.classifier(outputs)
