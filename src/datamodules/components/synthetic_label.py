@@ -17,8 +17,7 @@ LABEL_NAMES = [
     'publisher',
     'title',
     'url',
-    'year-suffix',
-    'other'
+    'year-suffix'
 ]
 
 num_labels = len(LABEL_NAMES)
