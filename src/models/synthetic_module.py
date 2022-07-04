@@ -28,12 +28,12 @@ class SyntheticLitModule(LightningModule):
 
         self.model = model
 
-        self.val_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels-1)
-        self.test_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels-1)
-        self.val_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
-        self.test_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
-        # self.val_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
-        # self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
+        self.val_acc = Accuracy(num_classes=num_labels)
+        self.test_acc = Accuracy(num_classes=num_labels)
+        self.val_micro_f1 = F1Score(num_classes=num_labels, average="micro")
+        self.test_micro_f1 = F1Score(num_classes=num_labels, average="micro")
+        # self.val_macro_f1 = F1Score(num_classes=num_labels, average="macro")
+        # self.test_macro_f1 = F1Score(num_classes=num_label, average="macro")
 
         self.conf_matrix = ConfusionMatrix(num_classes=num_labels)
         
