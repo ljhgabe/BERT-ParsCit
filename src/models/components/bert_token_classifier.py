@@ -1,7 +1,6 @@
 from torch import nn
 from transformers import AutoModel
 from transformers.modeling_outputs import TokenClassifierOutput
-from src.datamodules.components.synthetic_label import num_labels
 from src.models.utils.bert_model_config import BERT_MODEL_CHECKPOINT
 from src.models.utils.bert_model_path import MODEL_CACHE_DIR
 
@@ -10,7 +9,7 @@ class BertTokenClassifier(nn.Module):
     def __init__(
         self,
         model_checkpoint: str = BERT_MODEL_CHECKPOINT,
-        output_size: int = num_labels,
+        output_size: int = 19,
         cache_dir: str = MODEL_CACHE_DIR
     ):
         super().__init__()

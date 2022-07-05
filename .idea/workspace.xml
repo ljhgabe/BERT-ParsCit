@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="62609e31-3730-4d12-8cb6-e52ec32146fa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/configs/datamodule/synthetic.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/datamodule/synthetic.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/experiment/synthetic.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/experiment/synthetic.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datamodules/synthetic_datamodule.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/datamodules/synthetic_datamodule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/logger/wandb.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/logger/wandb.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/components/bert_token_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/components/bert_token_classifier.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/training_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/training_pipeline.py" afterDir="false" />
     </list>

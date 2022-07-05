@@ -2,7 +2,7 @@
 
 wandb:
   _target_: pytorch_lightning.loggers.wandb.WandbLogger
-  project: "scibert-synthetic"
+  project: "scibert-sda-cora"
   # name: ${name}
   save_dir: "/ssd1/jiahe/logs"
   offline: False # set True to store all logs only locally
