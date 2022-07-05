@@ -103,7 +103,7 @@ def train(config: DictConfig) -> Optional[float]:
         logger=logger,
     )
     
-    model.model.bert_embedder.save_pretrained("/ssd1/jiahe/pretrained/scibert-synthetic-uncased-200k")
+    # model.model.bert_embedder.save_pretrained("/ssd1/jiahe/pretrained/scibert-synthetic-uncased-200k")
 
     # Print path to best checkpoint
     if not config.trainer.get("fast_dev_run") and config.get("train"):

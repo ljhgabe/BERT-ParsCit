@@ -1,7 +1,7 @@
 from torch import nn
 from transformers import AutoModel
 from transformers.modeling_outputs import TokenClassifierOutput
-from src.datamodules.components.synthetic_label import num_labels
+from src.datamodules.components.cora_label import num_labels
 from src.models.utils.bert_model_config import BERT_MODEL_CHECKPOINT
 from src.models.utils.bert_model_path import MODEL_CACHE_DIR
 
