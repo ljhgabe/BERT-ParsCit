@@ -28,14 +28,15 @@ class CoraLitModule(LightningModule):
 
         self.model = model
 
-        self.val_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels-1)
-        self.test_acc = Accuracy(num_classes=num_labels, ignore_index=num_labels - 1)
-        self.val_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
-        self.test_micro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="micro")
-        # self.val_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
-        self.test_macro_f1 = F1Score(num_classes=num_labels, ignore_index=num_labels-1, average="macro")
+        # num_classes + 1 to account for the extra class used for padding
+        self.val_acc = Accuracy(num_classes=num_labels+1, ignore_index=num_labels)
+        self.test_acc = Accuracy(num_classes=num_labels+1, ignore_index=num_labels)
+        self.val_micro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="micro")
+        self.test_micro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="micro")
+        # self.val_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
+        self.test_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
 
-        self.conf_matrix = ConfusionMatrix(num_classes=num_labels)
+        self.conf_matrix = ConfusionMatrix(num_classes=num_labels+1)
 
         self.val_acc_best = MaxMetric()
         self.val_micro_f1_best = MaxMetric()
@@ -117,14 +118,14 @@ class CoraLitModule(LightningModule):
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
         macro_f1 = self.test_macro_f1(true_preds, true_labels)
 
-        confmat = self.conf_matrix(true_preds, true_labels).tolist()
+        confmat = self.conf_matrix(true_preds, true_labels)[:-1, :-1].tolist()
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/micro_f1", micro_f1, on_step=False, on_epoch=True)
         self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
         
-        plt.figure(figsize=(24, 24))
+        plt.figure(figsize=(24, 26))
         sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
         wandb.log({"Confusion Matrix": wandb.Image(plt)})
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
