@@ -1,6 +1,7 @@
 import os
 from typing import List, Optional
 
+import torch
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import (
@@ -104,6 +105,7 @@ def train(config: DictConfig) -> Optional[float]:
     )
     
     # model.model.bert_embedder.save_pretrained("/ssd1/jiahe/pretrained/scibert-synthetic-uncased-100k")
+    torch.save(model.model.state_dict(), "/ssd1/jiahe/pretrained/models/scibert-synthetic-50k-parscit.pt")
 
     # Print path to best checkpoint
     if not config.trainer.get("fast_dev_run") and config.get("train"):

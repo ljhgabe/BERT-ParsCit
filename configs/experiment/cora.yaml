@@ -16,7 +16,7 @@ defaults:
 # name of the run determines folder name in logs
 name: "bert_token_classifier"
 
-seed: 77
+seed: 42
 
 trainer:
   min_epochs: 5
@@ -26,7 +26,7 @@ trainer:
 module:
   lr: 2e-5
   model:
-    model_checkpoint: "/ssd1/jiahe/pretrained/scibert-synthetic-uncased-200k"
+    model_checkpoint: "/ssd1/jiahe/pretrained/scibert-synthetic-uncased-50k"
     output_size: 13
     cache_dir: "/ssd1/jiahe/parscit/"
 
