@@ -23,7 +23,7 @@ class BertTokenClassifierDouble(nn.Module):
         self.classifier = nn.Linear(in_features=19, out_features=output_size, bias=True)
 
     def forward(self, input_ids=None, token_type_ids=None, attention_mask=None, labels=None):
-        outputs = self.bert_parscit(input_ids, attention_mask=attention_mask)
+        outputs = self.bert_classifier(input_ids, attention_mask=attention_mask)
         outputs = self.dropout(outputs[0])
         logits = self.classifier(outputs)
         loss = None
