@@ -138,8 +138,8 @@ def postprocess(input_ids, predictions, labels, label_names):
 
     max_cols = max([len(lst) for lst in merged_true_labels])
 
-    padded_true_preds = [lst + [len(label_names)] * (max_cols - len(lst)) for lst in merged_true_labels]
-    padded_true_labels = [lst + [len(label_names)] * (max_cols - len(lst)) for lst in merged_true_predictions]
+    padded_true_preds = [lst + [len(label_names)] * (max_cols - len(lst)) for lst in merged_true_predictions]
+    padded_true_labels = [lst + [len(label_names)] * (max_cols - len(lst)) for lst in merged_true_labels]
     
     true_preds = torch.LongTensor(padded_true_preds)
     true_labels = torch.LongTensor(padded_true_labels)
