@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -18,6 +20,14 @@ model.load_state_dict(torch.load("scibert-synthetic-50k-parscit.pt"))
 model.eval()
 t = timeit.default_timer() - t1
 print("load model:",t)
+
+# def convert2abs(path:str):
+#     abs = path
+#     if abs and not os.path.isabs(abs):
+#         abs = os.path.join(
+#             hydra.utils.get_original_cwd(), abs
+#         )
+#     return abs
 
 def postprocess(input_ids, predictions, label_names):
     true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
@@ -92,10 +102,12 @@ def predict_for_text(example: str):
     result = " ".join(tagged_words)
     return result
 
-def predict_for_file(filename: str):
-
-    output = open("output.txt","w")
-    start_time = timeit.default_timer()
+def predict_for_file(filename: str, output_dir: str = "data/result"):
+    # output_dir = convert2abs(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.basename(filename)
+    output = open(os.path.join(output_dir,f"{output_file}_result.txt"),"w")
+    # start_time = timeit.default_timer()
     with open(filename,"r") as f:
         examples = f.readlines()
     splitted_example = [example.split() for example in examples]
@@ -136,19 +148,9 @@ def predict_for_file(filename: str):
             result = " ".join(tagged_words)
             output.write(result+"\n")
             results.append(result)
-    total_time = timeit.default_timer() - start_time
-    print("total_time:",total_time)
+    # total_time = timeit.default_timer() - start_time
+    # print("total_time:",total_time)
     output.close()
     return results
 
 
-# def predict_for_file(filename: str):
-#     results = []
-#     output = open("output.txt","w")
-#     with open(filename,"r") as f:
-#         for line in f.readlines():
-#             result = predict_for_text(line)
-#             results.append(result)
-#             output.write(result+'\n')
-#     output.close()
-#     return result
