@@ -1,0 +1,4 @@
+
+json_file: ???
+original_work_dir: ${hydra:runtime.cwd}
+output_dir: ${original_work_dir}/data/
