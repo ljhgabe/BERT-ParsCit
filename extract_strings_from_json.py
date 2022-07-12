@@ -14,7 +14,7 @@ def extract_reference_strings(config: DictConfig):
     os.makedirs(output_dir, exist_ok=True)
     assert json_file[-4:] == "json"
     output_path = os.path.join(output_dir,os.path.basename(json_file)[:-5]+"_ref.txt")
-    print(output_path)
+    # print(output_path)
     strings_file = open(output_path,"w")
     strings = []
     with open(json_file,'r') as f:

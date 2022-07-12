@@ -4,18 +4,20 @@ from torch.utils.data import DataLoader
 from transformers import DataCollatorForTokenClassification
 from collections import Counter
 from datasets import Dataset
-
+from tqdm import tqdm, trange
+import timeit
 from src.models.components.bert_token_classifier import BertTokenClassifier
 from src.datamodules.components.cora_label import LABEL_NAMES
 from src.models.components.bert_tokenizer import bert_tokenizer
-
+t1 = timeit.default_timer()
 model = BertTokenClassifier(
     model_checkpoint="allenai/scibert_scivocab_uncased",
     output_size=13,
 )
 model.load_state_dict(torch.load("scibert-synthetic-50k-parscit.pt"))
 model.eval()
-
+t = timeit.default_timer() - t1
+print("load model:",t)
 
 def postprocess(input_ids, predictions, label_names):
     true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
@@ -90,3 +92,63 @@ def predict_for_text(example: str):
     result = " ".join(tagged_words)
     return result
 
+def predict_for_file(filename: str):
+
+    output = open("output.txt","w")
+    start_time = timeit.default_timer()
+    with open(filename,"r") as f:
+        examples = f.readlines()
+    splitted_example = [example.split() for example in examples]
+    dict_data = {"tokens": splitted_example}
+    dataset = Dataset.from_dict(dict_data)
+    tokenized_example = dataset.map(
+        lambda x: bert_tokenizer(x["tokens"], truncation=True, is_split_into_words=True),
+        batched=True,
+        remove_columns=dataset.column_names
+    )
+    dataloader = DataLoader(
+        dataset=tokenized_example,
+        batch_size=8,
+        collate_fn=DataCollatorForTokenClassification(
+            tokenizer=bert_tokenizer
+        )
+    )
+    results = []
+    for batch in dataloader:
+        outputs = model(**batch)
+        preds = outputs.logits.argmax(dim=-1)
+        input_ids = batch["input_ids"]
+        true_preds = postprocess(
+            input_ids=input_ids,
+            predictions=preds,
+            label_names=LABEL_NAMES
+        )
+
+        true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
+        raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
+        tokens = [string.split() for string in raw_strings]
+
+        for i in range(len(tokens)):
+            tagged_words = []
+            for token, label in zip(tokens[i], true_preds[i]):
+                tagged_word = f"<{label}>{token}</{label}>"
+                tagged_words.append(tagged_word)
+            result = " ".join(tagged_words)
+            output.write(result+"\n")
+            results.append(result)
+    total_time = timeit.default_timer() - start_time
+    print("total_time:",total_time)
+    output.close()
+    return results
+
+
+# def predict_for_file(filename: str):
+#     results = []
+#     output = open("output.txt","w")
+#     with open(filename,"r") as f:
+#         for line in f.readlines():
+#             result = predict_for_text(line)
+#             results.append(result)
+#             output.write(result+'\n')
+#     output.close()
+#     return result
