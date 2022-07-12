@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader
 from transformers import DataCollatorForTokenClassification
 from collections import Counter
 from datasets import Dataset
+import transformers.tokenization_utils_base as tub
+from tokenizers import Encoding
 
 from src.models.components.bert_token_classifier import BertTokenClassifier
 from src.datamodules.components.cora_label import LABEL_NAMES
@@ -16,12 +18,11 @@ model = BertTokenClassifier(
 model.load_state_dict(torch.load("scibert-synthetic-50k-parscit.pt"))
 model.eval()
 
+en = Encoding()
 
-def postprocess(input_ids, predictions, label_names):
-    true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
-    raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
-    tokens = [string.split() for string in raw_strings]
-    word_ids = list(map(lambda t: bert_tokenizer(t, is_split_into_words=True).word_ids(), tokens))
+def postprocess(batch, predictions, label_names):
+    be = tub.BatchEncoding(batch, en)
+    word_ids = be.word_ids()
     true_word_ids = [[id for id in word_id if id is not None] for word_id in word_ids]
     true_predictions = [
         [label_names[p] for p in prediction if p != -100] for prediction in predictions
@@ -72,19 +73,19 @@ def predict_for_text(example: str):
     for batch in dataloader:
         outputs = model(**batch)
         preds = outputs.logits.argmax(dim=-1)
-        input_ids = batch["input_ids"]
+        # input_ids = batch["input_ids"]
         true_preds = postprocess(
-            input_ids=input_ids,
+            batch=batch,
             predictions=preds,
             label_names=LABEL_NAMES
         )
 
-    true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
-    raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
-    tokens = [string.split() for string in raw_strings]
-
+    # true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
+    # raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
+    # tokens = [string.split() for string in raw_strings]
+    tokens = splitted_example
     tagged_words = []
-    for token, label in zip(tokens[0], true_preds[0]):
+    for token, label in zip(tokens, true_preds[0]):
         tagged_word = f"<{label}>{token}</{label}>"
         tagged_words.append(tagged_word)
     result = " ".join(tagged_words)
