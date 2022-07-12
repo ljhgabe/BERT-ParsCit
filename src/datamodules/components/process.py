@@ -71,7 +71,7 @@ def align_labels_with_tokens(labels, word_ids):
 
 def tokenize_and_align_labels(examples, label2id):
     tokenized_inputs = bert_tokenizer(
-        examples["tokens"], truncation=True, is_split_into_words=True
+        examples["tokens"], padding="max_length", max_length=512, truncation=True, is_split_into_words=True
     )
 
     all_labels = examples["labels"]
@@ -81,8 +81,9 @@ def tokenize_and_align_labels(examples, label2id):
         numerical_labels = list(map(lambda l: int(label2id[l]), labels))
         word_ids = tokenized_inputs.word_ids(i)
         # Replace None with -1 in order to form tensors
-        word_ids[0], word_ids[-1] = -1, -1
         new_labels.append(align_labels_with_tokens(numerical_labels, word_ids))
+        word_ids = [word_id if word_id is not None else -1 for word_id in word_ids]
+        print(word_ids)
         all_word_ids.append(word_ids)
 
     tokenized_inputs["labels"] = new_labels

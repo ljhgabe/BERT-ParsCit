@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 
 from src.datamodules.components.cora_label import num_labels, label2id
 from src.datamodules.utils.datamodule_path import CORA_DATA_CACHE_DIR, CORA_DATASET_REPO
-from src.datamodules.components.process import preprocess, tokenize_and_align_labels
+from src.datamodules.components.process import tokenize_and_align_labels
 from src.models.components.bert_tokenizer import bert_tokenizer
 from typing import Optional
 
