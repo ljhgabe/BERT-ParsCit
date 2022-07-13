@@ -102,7 +102,7 @@ def predict_for_text(example: str):
     result = " ".join(tagged_words)
     return result
 
-def predict_for_file(filename: str, output_dir: str = "data/result"):
+def predict_for_file(filename: str, output_dir: str = "result"):
     # output_dir = convert2abs(output_dir)
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.basename(filename)

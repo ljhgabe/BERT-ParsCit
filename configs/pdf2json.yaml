@@ -1,5 +1,0 @@
-
-input_file: /home/dingyx/project/BERT-ParsCit-main/tools/tests/pdf/2020.acl-main.207.pdf
-original_work_dir: ${hydra:runtime.cwd}
-output_dir: ${original_work_dir}/data/output
-temp_dir: ${original_work_dir}/data/temp

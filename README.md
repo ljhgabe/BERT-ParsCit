@@ -98,16 +98,16 @@ There are a couple of test PDFs in `tools/tests/pdf/` if you'd like to try with 
 For example, you can try:
 
 ```console
-python pdf2json.py input_file=tools/tests/pdf/N18-3011.pdf output_dir=output_dir/
+python pdf2json.py --input_file tools/tests/pdf/N18-3011.pdf --output_dir output_dir
 ```
 
-This will generate a JSON file in the specified `output_dir`. If unspecified, the file will be in the `data/output/` directory from your path.
+This will generate a JSON file in the specified `output_dir`. If unspecified, the file will be in the `output/` directory from your path.
 
 ### Extract Reference Strings from a JSON File
 
 To get reference strings, try:
 ```console
-python extract_strings_from_json.py json_file=data/output/N18-3011.json output_dir=data/
+python extract_strings_from_json.py --input_file data/output/N18-3011.json --output_dir output/
 ```
 This will generate a text file in the specified 'output_dir',where each line contains a reference string.
 
@@ -115,6 +115,6 @@ This will generate a text file in the specified 'output_dir',where each line con
 To predict the reference string tags, try:
 ```python
 from bert_parscit import predict_for_file
-res = predict_for_file("data/N18-3011_ref.txt",output_dir="data/result")
+res = predict_for_file("output/N18-3011_ref.txt",output_dir="result")
 ```
-The prediction result is saved in `output_dir`.If unspecified, the file will be in the data/result/ directory from your path.
+The prediction result is saved in `output_dir`.If unspecified, the file will be in the result/ directory from your path.
