@@ -8,8 +8,8 @@ from typing import Optional, Dict
 from doc2json.grobid2json.grobid.grobid_client import GrobidClient
 from doc2json.grobid2json.tei_to_json import convert_tei_xml_file_to_s2orc_json, convert_tei_xml_soup_to_s2orc_json
 
-BASE_TEMP_DIR = 'temp'
-BASE_OUTPUT_DIR = 'output'
+BASE_TEMP_DIR = 'temp/tei_xml'
+BASE_OUTPUT_DIR = 'temp/pdf'
 BASE_LOG_DIR = 'log'
 
 
@@ -52,7 +52,7 @@ def process_pdf_file(
 
     # get paper id as the name of the file
     paper_id = '.'.join(input_file.split('/')[-1].split('.')[:-1])
-    tei_file = os.path.join(temp_dir, f'{paper_id}.tei.xml')
+    tei_file = os.path.join(temp_dir, f'{paper_id}.tei.xml')#隐藏文件
     output_file = os.path.join(output_dir, f'{paper_id}.json')
 
     # check if input file exists and output file doesn't
@@ -75,7 +75,8 @@ def process_pdf_file(
     with open(output_file, 'w') as outf:
         # print(paper.release_json())
         json.dump(paper.release_json(), outf, indent=4, sort_keys=False)
-
+    hidden_file = os.path.join(temp_dir, f'.{paper_id}.tei.xml')
+    os.rename(tei_file, hidden_file)
     return output_file
 
 

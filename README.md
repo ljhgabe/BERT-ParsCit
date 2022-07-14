@@ -91,26 +91,19 @@ bash tools/scripts/run_grobid.sh
 
 to start the Grobid server. Don't worry if it gets stuck at 87%; this is normal and means Grobid is ready to process PDFs.
 
-### Convert a PDF to JSON
 
-There are a couple of test PDFs in `tools/tests/pdf/` if you'd like to try with that.
+### Extract Reference Strings from a PDF File
 
-For example, you can try:
-
+You can extract strings you need with the script. 
+For example, to get reference strings, try:
 ```console
-python pdf2json.py --input_file tools/tests/pdf/N18-3011.pdf --output_dir output_dir
+python pdf2text.py --input_file tools/tests/pdf/2020.acl-main.207.pdf --reference
+ --output_dir output/ --temp_dir temp/
 ```
-
-This will generate a JSON file in the specified `output_dir`. If unspecified, the file will be in the `output/` directory from your path.
-
-### Extract Reference Strings from a JSON File
-
-To get reference strings, try:
-```console
-python extract_strings_from_json.py --input_file data/output/N18-3011.json --output_dir output/
-```
-This will generate a text file in the specified 'output_dir',where each line contains a reference string.
-
+With `--reference`, this will generate a text file of reference strings in the specified `output_dir`.
+And the JSON format of the origin PDF will be saved in the specified `temp_dir`. 
+The default `output_dir` is `output/` from your path and the default `temp_dir` is `temp/` from your path.
+ 
 ### Parse Reference Strings from a Text File
 To predict the reference string tags, try:
 ```python
@@ -118,3 +111,4 @@ from bert_parscit import predict_for_file
 res = predict_for_file("output/N18-3011_ref.txt",output_dir="result")
 ```
 The prediction result is saved in `output_dir`.If unspecified, the file will be in the result/ directory from your path.
+
