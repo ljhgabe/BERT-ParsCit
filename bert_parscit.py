@@ -106,7 +106,7 @@ def predict_for_file(filename: str, output_dir: str = "result"):
     # output_dir = convert2abs(output_dir)
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.basename(filename)
-    output = open(os.path.join(output_dir,f"{output_file}_result.txt"),"w")
+    output = open(os.path.join(output_dir,f"{output_file[:-4]}_result.txt"),"w")
     # start_time = timeit.default_timer()
     with open(filename,"r") as f:
         examples = f.readlines()

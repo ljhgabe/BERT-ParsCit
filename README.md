@@ -1,4 +1,5 @@
 
+
 <div align="center">
    
 # BERT ParsCit
@@ -17,9 +18,7 @@
 This is the repository of BERT ParsCit and is under active development at National University of Singapore (NUS), Singapore. The project was built upon a [template by ashleve](https://github.com/ashleve/lightning-hydra-template).
 BERT ParsCit is a BERT version of [Neural ParsCit](https://github.com/WING-NUS/Neural-ParsCit) built by researchers under [WING@NUS](https://wing.comp.nus.edu.sg/).
 
-## How to run
-
-Install dependencies
+## Installation
 
 ```bash
 # clone project
@@ -36,6 +35,16 @@ conda activate myenv
 # install requirements
 pip install -r requirements.txt
 ```
+
+## Example usage
+
+```bash
+from bert_parscit import predict_for_text
+
+result = predict_for_text("Calzolari, N. (1982) Towards the organization of lexical definitions on a database structure. In E. Hajicova (Ed.), COLING '82 Abstracts, Charles University, Prague, pp.61-64.")
+```
+
+## How to train
 
 Train model with default configuration
 
@@ -64,7 +73,6 @@ To show the full stack trace for error occurred during training or testing
 ```bash
 HYDRA_FULL_ERROR=1 python train.py
 ```
-
 
 ## How to Parse Reference Strings from a PDF
 ###  Setup Doc2Json
