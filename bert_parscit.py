@@ -1,12 +1,10 @@
 import os
 
 import torch
-import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import DataCollatorForTokenClassification
 from collections import Counter
 from datasets import Dataset
-from tqdm import tqdm, trange
 import timeit
 from src.models.components.bert_token_classifier import BertTokenClassifier
 from src.datamodules.components.cora_label import LABEL_NAMES
@@ -18,16 +16,9 @@ model = BertTokenClassifier(
 )
 model.load_state_dict(torch.load("scibert-synthetic-50k-parscit.pt"))
 model.eval()
-t = timeit.default_timer() - t1
-print("load model:",t)
+# t = timeit.default_timer() - t1
+# print("load model:",t)
 
-# def convert2abs(path:str):
-#     abs = path
-#     if abs and not os.path.isabs(abs):
-#         abs = os.path.join(
-#             hydra.utils.get_original_cwd(), abs
-#         )
-#     return abs
 
 def postprocess(input_ids, predictions, label_names):
     true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
