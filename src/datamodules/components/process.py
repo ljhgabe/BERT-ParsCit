@@ -71,28 +71,34 @@ def align_labels_with_tokens(labels, word_ids):
 
 def tokenize_and_align_labels(examples, label2id):
     tokenized_inputs = bert_tokenizer(
-        examples["tokens"], truncation=True, is_split_into_words=True
+        examples["tokens"], padding="max_length", max_length=512, truncation=True, is_split_into_words=True
     )
 
     all_labels = examples["labels"]
     new_labels = []
+    all_word_ids = []
     for i, labels in enumerate(all_labels):
         numerical_labels = list(map(lambda l: int(label2id[l]), labels))
         word_ids = tokenized_inputs.word_ids(i)
+        # Replace None with -1 in order to form tensors
         new_labels.append(align_labels_with_tokens(numerical_labels, word_ids))
+        word_ids = [word_id if word_id is not None else -1 for word_id in word_ids]
+        print(word_ids)
+        all_word_ids.append(word_ids)
 
     tokenized_inputs["labels"] = new_labels
+    tokenized_inputs["word_ids"] = all_word_ids
     return tokenized_inputs
 
 
-def postprocess(input_ids, predictions, labels, label_names):
+def postprocess(word_ids, predictions, labels, label_names):
     label2id = {label: str(i) for i, label in enumerate(label_names)}
 
-    true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
-    raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
-    tokens = [string.split() for string in raw_strings]
-    word_ids = list(map(lambda t: bert_tokenizer(t, is_split_into_words=True).word_ids(), tokens))
-    true_word_ids = [[id for id in word_id if id is not None] for word_id in word_ids]
+    # true_input_ids = [[id for id in input_id if id != 0 and id != 102 and id != 103] for input_id in input_ids]
+    # raw_strings = [bert_tokenizer.decode(true_input_id) for true_input_id in true_input_ids]
+    # tokens = [string.split() for string in raw_strings]
+    # word_ids = list(map(lambda t: bert_tokenizer(t, is_split_into_words=True).word_ids(), tokens))
+    true_word_ids = [[id for id in word_id if id != -1] for word_id in word_ids]
     true_labels = [[label_names[l] for l in label if l != -100] for label in labels]
     true_predictions = [
         [label_names[p] for (p, l) in zip(prediction, label) if l != -100]

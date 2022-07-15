@@ -120,3 +120,4 @@ res = predict_for_file("output/N18-3011_ref.txt",output_dir="result")
 ```
 The prediction result is saved in `output_dir`.If unspecified, the file will be in the result/ directory from your path.
 
+
