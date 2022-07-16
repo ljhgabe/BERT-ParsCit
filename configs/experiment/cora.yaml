@@ -16,7 +16,7 @@ defaults:
 # name of the run determines folder name in logs
 name: "bert_token_classifier"
 
-seed: 42
+seed: 777
 
 trainer:
   min_epochs: 5

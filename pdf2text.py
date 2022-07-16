@@ -32,7 +32,7 @@ if __name__ == "__main__":
     parser.add_argument("--input_file", required=True, help="path to the input json file")
     parser.add_argument("--temp_dir", default=BASE_OUTPUT_DIR, help="path to the temp dir for putting json files")
     parser.add_argument("--output_dir", default=BASE_TEMP_DIR, help="path to the output dir for putting text files")
-    parser.add_argument("--save_temp", action="store_true", default=True, help="to save temporary files")
+    parser.add_argument("--save_temp", action="store_true", default=True, help="to save temporary json files")
 
     parser.add_argument("--reference", action="store_true", default=False, help="to extract reference strings")
     args = parser.parse_args()

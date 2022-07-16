@@ -67,9 +67,9 @@ class CoraLitModule(LightningModule):
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        input_ids = batch["input_ids"]
+        word_ids = batch["word_ids"]
         true_preds, true_labels = postprocess(
-            input_ids=input_ids,
+            word_ids=word_ids,
             predictions=preds,
             labels=labels,
             label_names=LABEL_NAMES,
@@ -103,9 +103,9 @@ class CoraLitModule(LightningModule):
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        input_ids = batch["input_ids"]
+        word_ids = batch["word_ids"]
         true_preds, true_labels = postprocess(
-            input_ids=input_ids,
+            word_ids=word_ids,
             predictions=preds,
             labels=labels,
             label_names=LABEL_NAMES
