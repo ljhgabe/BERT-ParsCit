@@ -71,7 +71,7 @@ def align_labels_with_tokens(labels, word_ids):
 
 def tokenize_and_align_labels(examples, label2id):
     tokenized_inputs = bert_tokenizer(
-        examples["tokens"], padding="max_length", max_length=512, truncation=True, is_split_into_words=True
+        examples["tokens"], padding=True, truncation=True, is_split_into_words=True
     )
 
     all_labels = examples["labels"]
