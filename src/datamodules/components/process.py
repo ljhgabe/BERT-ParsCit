@@ -1,5 +1,6 @@
 import bs4
 import torch
+import numpy as np
 from bs4 import BeautifulSoup
 from collections import Counter
 from src.models.components.bert_tokenizer import bert_tokenizer
@@ -69,9 +70,52 @@ def align_labels_with_tokens(labels, word_ids):
     return new_labels
 
 
+def convert_to_list(batch):
+    res = []
+    for i in batch:
+        input_ids = i["input_ids"]
+        token_type_ids = i["token_type_ids"]
+        attn_mask = i["attention_mask"]
+        word_ids = i["word_ids"]
+        res.append([input_ids, token_type_ids, attn_mask, word_ids])
+    return res
+
+
+def pad(batch):
+    # Pads to the longest sample
+    batch = convert_to_list(batch)
+    get_element = lambda x: [sample[x] for sample in batch]
+    seq_len = [len(tokens) for tokens in get_element(0)]
+    maxlen = np.array(seq_len).max()
+
+    do_pad = lambda x, seqlen: [sample[x] + [0] * (seqlen - len(sample[x])) for sample in batch]  # 0: <pad>
+    do_word_ids_pad = lambda x, seqlen: [sample[x] + [-1] * (seqlen - len(sample[x])) for sample in batch]
+    input_ids = do_pad(0, maxlen)
+    token_type_ids = do_pad(1, maxlen)
+    attn_mask = do_pad(2, maxlen)
+    word_ids = do_word_ids_pad(3, maxlen)
+    LT = torch.LongTensor
+
+    token_ids = get_element(0)
+    token_ids_len = torch.LongTensor(list(map(len, token_ids)))
+    _, sorted_idx = token_ids_len.sort(0, descending=True)
+
+    input_ids = LT(input_ids)[sorted_idx]
+    attn_mask = LT(attn_mask)[sorted_idx]
+    token_type_ids = LT(token_type_ids)[sorted_idx]
+    word_ids = LT(word_ids)[sorted_idx]
+
+    return {
+        "input_ids": input_ids,
+        "token_type_ids": token_type_ids,
+        "attention_mask": attn_mask,
+        "word_ids": word_ids
+    }
+
+
 def tokenize_and_align_labels(examples, label2id):
     tokenized_inputs = bert_tokenizer(
-        examples["tokens"], padding=True, truncation=True, is_split_into_words=True
+        examples["tokens"], truncation=True, is_split_into_words=True
     )
 
     all_labels = examples["labels"]
@@ -83,7 +127,6 @@ def tokenize_and_align_labels(examples, label2id):
         # Replace None with -1 in order to form tensors
         new_labels.append(align_labels_with_tokens(numerical_labels, word_ids))
         word_ids = [word_id if word_id is not None else -1 for word_id in word_ids]
-        print(word_ids)
         all_word_ids.append(word_ids)
 
     tokenized_inputs["labels"] = new_labels
