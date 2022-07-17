@@ -77,7 +77,8 @@ def convert_to_list(batch):
         token_type_ids = i["token_type_ids"]
         attn_mask = i["attention_mask"]
         word_ids = i["word_ids"]
-        res.append([input_ids, token_type_ids, attn_mask, word_ids])
+        labels = i["labels"]
+        res.append([input_ids, token_type_ids, attn_mask, word_ids, labels])
     return res
 
 
@@ -90,10 +91,12 @@ def pad(batch):
 
     do_pad = lambda x, seqlen: [sample[x] + [0] * (seqlen - len(sample[x])) for sample in batch]  # 0: <pad>
     do_word_ids_pad = lambda x, seqlen: [sample[x] + [-1] * (seqlen - len(sample[x])) for sample in batch]
+    do_labels_pad = lambda x, seqlen: [sample[x] + [-100] * (seqlen - len(sample[x])) for sample in batch]
     input_ids = do_pad(0, maxlen)
     token_type_ids = do_pad(1, maxlen)
     attn_mask = do_pad(2, maxlen)
     word_ids = do_word_ids_pad(3, maxlen)
+    labels = do_labels_pad(4, maxlen)
     LT = torch.LongTensor
 
     token_ids = get_element(0)
@@ -104,12 +107,14 @@ def pad(batch):
     attn_mask = LT(attn_mask)[sorted_idx]
     token_type_ids = LT(token_type_ids)[sorted_idx]
     word_ids = LT(word_ids)[sorted_idx]
+    labels = LT(labels)[sorted_idx]
 
     return {
         "input_ids": input_ids,
         "token_type_ids": token_type_ids,
         "attention_mask": attn_mask,
-        "word_ids": word_ids
+        "word_ids": word_ids,
+        "labels": labels
     }
 
 
