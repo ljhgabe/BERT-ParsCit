@@ -117,21 +117,28 @@ class CoraLitModule(LightningModule):
         acc = self.test_acc(true_preds, true_labels)
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
         macro_f1 = self.test_macro_f1(true_preds, true_labels)
-
-        confmat = self.conf_matrix(true_preds, true_labels)[:-1, :-1].tolist()
+        confmat = self.conf_matrix(true_preds, true_labels)
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/micro_f1", micro_f1, on_step=False, on_epoch=True)
         self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
-        
-        plt.figure(figsize=(24, 26))
-        sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
-        wandb.log({"Confusion Matrix": wandb.Image(plt)})
+
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def test_epoch_end(self, outputs: List[Any]):
-        pass
+        acc = self.test_acc.compute()
+        micro_f1 = self.test_micro_f1.compute()
+        macro_f1 = self.test_macro_f1.compute()
+        confmat = self.conf_matrix.compute()[:-1, :-1].tolist()
+
+        self.log("test/acc", acc, on_epoch=True, prog_bar=True)
+        self.log("test/micro_f1", micro_f1, on_epoch=True, prog_bar=True)
+        self.log("test/macro_f1", macro_f1, on_epoch=True, prog_bar=True)
+
+        plt.figure(figsize=(24, 26))
+        sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
+        wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
     def on_epoch_end(self):
         self.val_acc.reset()

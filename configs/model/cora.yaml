@@ -3,6 +3,6 @@ lr: 2e-5
 
 model:
   _target_: src.models.components.bert_token_classifier.BertTokenClassifier
-  model_checkpoint: "/ssd1/jiahe/pretrained/scibert-synthetic-uncased-50k"
+  model_checkpoint: "/ssd1/jiahe/pretrained/scibert-synthetic-uncased-200k"
   output_size: 13
   cache_dir: "/ssd1/jiahe/parscit/"
