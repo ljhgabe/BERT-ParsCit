@@ -7,3 +7,5 @@ inference.ipynb
 scibert-synthetic-50k-parscit.pt
 __pycache__/
 *.pyc
+./.idea
+

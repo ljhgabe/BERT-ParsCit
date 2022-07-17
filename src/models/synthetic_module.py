@@ -28,15 +28,16 @@ class SyntheticLitModule(LightningModule):
 
         self.model = model
 
-        self.val_acc = Accuracy(num_classes=num_labels)
-        self.test_acc = Accuracy(num_classes=num_labels)
-        self.val_micro_f1 = F1Score(num_classes=num_labels, average="micro")
-        self.test_micro_f1 = F1Score(num_classes=num_labels, average="micro")
-        # self.val_macro_f1 = F1Score(num_classes=num_labels, average="macro")
-        # self.test_macro_f1 = F1Score(num_classes=num_label, average="macro")
+        # num_classes + 1 to account for the extra class used for padding
+        self.val_acc = Accuracy(num_classes=num_labels + 1, ignore_index=num_labels)
+        self.test_acc = Accuracy(num_classes=num_labels + 1, ignore_index=num_labels)
+        self.val_micro_f1 = F1Score(num_classes=num_labels + 1, ignore_index=num_labels, average="micro")
+        self.test_micro_f1 = F1Score(num_classes=num_labels + 1, ignore_index=num_labels, average="micro")
+        # self.val_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
+        self.test_macro_f1 = F1Score(num_classes=num_labels + 1, ignore_index=num_labels, average="macro")
 
-        self.conf_matrix = ConfusionMatrix(num_classes=num_labels)
-        
+        self.conf_matrix = ConfusionMatrix(num_classes=num_labels + 1)
+
         self.val_acc_best = MaxMetric()
         self.val_micro_f1_best = MaxMetric()
         # self.val_macro_f1_best = MaxMetric()
@@ -66,9 +67,9 @@ class SyntheticLitModule(LightningModule):
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        input_ids = batch["input_ids"]
+        word_ids = batch["word_ids"]
         true_preds, true_labels = postprocess(
-            input_ids=input_ids,
+            word_ids=word_ids,
             predictions=preds,
             labels=labels,
             label_names=LABEL_NAMES,
@@ -102,9 +103,9 @@ class SyntheticLitModule(LightningModule):
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        input_ids = batch["input_ids"]
+        word_ids = batch["word_ids"]
         true_preds, true_labels = postprocess(
-            input_ids=input_ids,
+            word_ids=word_ids,
             predictions=preds,
             labels=labels,
             label_names=LABEL_NAMES
@@ -115,22 +116,29 @@ class SyntheticLitModule(LightningModule):
 
         acc = self.test_acc(true_preds, true_labels)
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
-        # macro_f1 = self.test_macro_f1(true_preds, true_labels)
-
-        confmat = self.conf_matrix(true_preds, true_labels).tolist()
+        macro_f1 = self.test_macro_f1(true_preds, true_labels)
+        confmat = self.conf_matrix(true_preds, true_labels)
 
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
         self.log("test/micro_f1", micro_f1, on_step=False, on_epoch=True)
-        # self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
-        
-        plt.figure(figsize=(24, 24))
-        sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
-        wandb.log({"Confusion Matrix": wandb.Image(plt)})
+        self.log("test/macro_f1", macro_f1, on_step=False, on_epoch=True)
+
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def test_epoch_end(self, outputs: List[Any]):
-        pass
+        acc = self.test_acc.compute()
+        micro_f1 = self.test_micro_f1.compute()
+        macro_f1 = self.test_macro_f1.compute()
+        confmat = self.conf_matrix.compute()[:-1, :-1].tolist()
+
+        self.log("test/acc", acc, on_epoch=True, prog_bar=True)
+        self.log("test/micro_f1", micro_f1, on_epoch=True, prog_bar=True)
+        self.log("test/macro_f1", macro_f1, on_epoch=True, prog_bar=True)
+
+        plt.figure(figsize=(24, 26))
+        sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
+        wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
     def on_epoch_end(self):
         self.val_acc.reset()
@@ -138,7 +146,7 @@ class SyntheticLitModule(LightningModule):
         self.val_micro_f1.reset()
         self.test_micro_f1.reset()
         # self.val_macro_f1.reset()
-        # self.test_macro_f1.reset()
+        self.test_macro_f1.reset()
 
     def configure_optimizers(self):
         return torch.optim.AdamW(
