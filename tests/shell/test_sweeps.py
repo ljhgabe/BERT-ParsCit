@@ -13,7 +13,7 @@ Use the following command to skip slow tests:
 @pytest.mark.slow
 def test_experiments():
     """Test running all available experiment configs for 1 epoch."""
-    command = ["train.py", "-m", "experiment=glob(*)", "++trainer.max_epochs=1"]
+    command = ["train.py", "-doc2json", "experiment=glob(*)", "++trainer.max_epochs=1"]
     run_command(command)
 
 
@@ -22,7 +22,7 @@ def test_default_sweep():
     """Test default Hydra sweeper."""
     command = [
         "train.py",
-        "-m",
+        "-doc2json",
         "datamodule.batch_size=64,128",
         "model.lr=0.01,0.02",
         "trainer=default",
@@ -36,7 +36,7 @@ def test_optuna_sweep():
     """Test Optuna sweeper."""
     command = [
         "train.py",
-        "-m",
+        "-doc2json",
         "hparams_search=mnist_optuna",
         "trainer=default",
         "++trainer.fast_dev_run=true",

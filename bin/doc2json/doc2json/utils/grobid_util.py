@@ -243,12 +243,12 @@ def get_venue_from_grobid_xml(raw_xml: BeautifulSoup, title_text: str) -> str:
     Returns venue/journal/publisher of bib entry
     Grobid ref documentation: https://grobid.readthedocs.io/en/latest/training/Bibliographical-references/
     level="j": journal title
-    level="m": "non journal bibliographical item holding the cited article"
+    level="doc2json": "non journal bibliographical item holding the cited article"
     level="s": series title
     :return:
     """
     title_names = []
-    keep_types = ["j", "m", "s"]
+    keep_types = ["j", "doc2json", "s"]
     # get all titles of the anove types
     for title_entry in raw_xml.find_all("title"):
         if title_entry.has_attr("level") \

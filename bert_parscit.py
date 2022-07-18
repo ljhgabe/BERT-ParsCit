@@ -1,16 +1,20 @@
 import os
 import timeit
+from typing import List, Tuple
 
 import numpy
 import torch
 from torch.utils.data import DataLoader
-from transformers import DataCollatorForTokenClassification
 from collections import Counter
 from datasets import Dataset
 
 from src.models.components.bert_token_classifier import BertTokenClassifier
 from src.datamodules.components.cora_label import LABEL_NAMES
 from src.models.components.bert_tokenizer import bert_tokenizer
+from pdf2text import process_pdf_file, get_reference
+
+BASE_OUTPUT_DIR = "result"
+BASE_TEMP_DIR = "temp"
 
 model = BertTokenClassifier(
     model_checkpoint="allenai/scibert_scivocab_uncased",
@@ -67,42 +71,6 @@ def tokenize_and_add_word_ids(example):
 
     return tokenized_inputs
 
-
-def predict_for_text(example: str):
-    splitted_example = example.split()
-    dict_data = {"tokens": [splitted_example]}
-    dataset = Dataset.from_dict(dict_data)
-    tokenized_example = dataset.map(
-        lambda x: tokenize_and_add_word_ids(x),
-        batched=True,
-        remove_columns=dataset.column_names
-    )
-    dataloader = DataLoader(
-        dataset=tokenized_example,
-        batch_size=1,
-        collate_fn=DataCollatorForTokenClassification(
-            tokenizer=bert_tokenizer,
-        )
-    )
-    for batch in dataloader:
-        outputs = model(**batch)
-        preds = outputs.logits.argmax(dim=-1)
-        word_ids = batch["word_ids"]
-        true_preds = postprocess(
-            word_ids=word_ids,
-            predictions=preds,
-            label_names=LABEL_NAMES
-        )
-
-    tokens = splitted_example
-    tagged_words = []
-
-    for token, label in zip(tokens, true_preds[0]):
-        tagged_word = f"<{label}>{token}</{label}>"
-        tagged_words.append(tagged_word)
-    result = " ".join(tagged_words)
-    return result
-
 def convert_to_list(batch):
   res = []
   for i in batch:
@@ -148,16 +116,17 @@ def pad(batch):
 
 
 
-def predict_for_file(filename: str, output_dir: str = "result"):
+def predict(examples: List[List[str]]) -> Tuple[List[str], List[List[str]], List[List[str]]]:
+    """
 
-    os.makedirs(output_dir, exist_ok=True)
-    output_file = os.path.basename(filename)
-    output = open(os.path.join(output_dir,f"{output_file[:-4]}_result.txt"),"w")
-    start_time = timeit.default_timer()
-    with open(filename,"r") as f:
-        examples = f.readlines()
-    splitted_examples = [example.split() for example in examples]
-    dict_data = {"tokens": splitted_examples}
+    Args:
+        examples: a list of inputs for inference, where each item is a list of tokens
+
+    Returns:
+        results: a list of labels predicted by the model
+
+    """
+    dict_data = {"tokens": examples}
     dataset = Dataset.from_dict(dict_data)
     tokenized_example = dataset.map(
         lambda x: tokenize_and_add_word_ids(x),
@@ -169,17 +138,12 @@ def predict_for_file(filename: str, output_dir: str = "result"):
         dataset=tokenized_example,
         batch_size=8,
         collate_fn=pad
-        # collate_fn=DataCollatorForTokenClassification(
-        #     tokenizer=bert_tokenizer,
-        # )
     )
     results = []
     true_preds = []
     for batch in dataloader:
         outputs = model(**batch)
         preds = outputs.logits.argmax(dim=-1)
-        #
-        # t("--------")
         word_ids = batch["word_ids"]
         true_pred = postprocess(
             word_ids=word_ids,
@@ -187,7 +151,7 @@ def predict_for_file(filename: str, output_dir: str = "result"):
             label_names=LABEL_NAMES
         )
         true_preds.extend(true_pred)
-    tokens = splitted_examples
+    tokens = examples
 
     for i in range(len(tokens)):
         tagged_words = []
@@ -195,11 +159,38 @@ def predict_for_file(filename: str, output_dir: str = "result"):
             tagged_word = f"<{label}>{token}</{label}>"
             tagged_words.append(tagged_word)
         result = " ".join(tagged_words)
-        output.write(result+"\n")
         results.append(result)
+    return results, tokens, true_preds
+
+
+
+def predict_for_string(example: str):
+    splitted_example = [example.split()]
+    results, tokens, preds = predict(splitted_example)
+
+    return results, tokens, preds
+
+
+
+def predict_for_text(filename: str, output_dir: str = BASE_OUTPUT_DIR):
+
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.basename(filename)
+
+    start_time = timeit.default_timer()
+    with open(filename,"r") as f:
+        examples = f.readlines()
+    splitted_examples = [example.split() for example in examples]
+    results, tokens, preds = predict(splitted_examples)
+    with open(os.path.join(output_dir, f"{output_file[:-4]}_result.txt"), "w") as output:
+        for res in results:
+            output.write(res+"\n")
     total_time = timeit.default_timer() - start_time
     print("total_time:",total_time)
-    output.close()
-    return results
+    return results, tokens, preds
 
 
+def predict_for_pdf(filename: str, output_dir: str = BASE_OUTPUT_DIR, temp_dir: str = BASE_TEMP_DIR):
+    json_file = process_pdf_file(input_file=filename, temp_dir=temp_dir, output_dir=temp_dir)
+    text_file = get_reference(json_file=json_file, output_dir=output_dir)
+    return predict_for_text(text_file, output_dir=output_dir)
