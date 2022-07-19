@@ -52,7 +52,7 @@ def process_pdf_file(
 
     # get paper id as the name of the file
     paper_id = '.'.join(input_file.split('/')[-1].split('.')[:-1])
-    tei_file = os.path.join(temp_dir, f'{paper_id}.tei.xml')#隐藏文件
+    tei_file = os.path.join(temp_dir, f'{paper_id}.tei.xml')
     output_file = os.path.join(output_dir, f'{paper_id}.json')
 
     # check if input file exists and output file doesn't
