@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 
 from src.datamodules.components.cora_label import num_labels, label2id
 from src.datamodules.utils.datamodule_path import CORA_DATA_CACHE_DIR, CORA_DATASET_REPO
-from src.datamodules.components.process import tokenize_and_align_labels
+from src.datamodules.components.process import tokenize_and_align_labels, pad
 from src.models.components.bert_tokenizer import bert_tokenizer
 from typing import Optional
 
@@ -24,9 +24,7 @@ class CoraDataModule(LightningDataModule):
     ):
         super().__init__()
         self.save_hyperparameters(logger=False)
-        self.data_collator = DataCollatorForTokenClassification(
-            tokenizer=bert_tokenizer
-        )
+        self.data_collator = pad
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
@@ -78,7 +76,7 @@ class CoraDataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=500,
+            batch_size=self.hparams.train_batch_size,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             collate_fn=self.data_collator,
