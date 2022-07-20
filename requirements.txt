@@ -40,7 +40,7 @@ beautifulsoup4~=4.9.0
 
 matplotlib~=3.5.1
 
-numpy~=1.22.3
+
 
 # --------- doc2json --------- #
 boto3~=1.9.147

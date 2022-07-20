@@ -8,5 +8,5 @@ scibert-synthetic-50k-parscit.pt
 __pycache__/
 .idea/
 *.pyc
-.idea/
+
 

@@ -2,7 +2,7 @@
 
 hydra:
   run:
-    dir: /ssd1/jiahe/logs/evaluations/runs/${name}/${now:%Y-%doc2json-%d}_${now:%H-%M-%S}
+    dir: /ssd1/jiahe/logs/evaluations/runs/${name}/${now:%Y-%m-%d}_${now:%H-%M-%S}
   sweep:
-    dir: /ssd1/jiahe/logs/evaluations/multiruns/${name}/${now:%Y-%doc2json-%d}_${now:%H-%M-%S}
+    dir: /ssd1/jiahe/logs/evaluations/multiruns/${name}/${now:%Y-%m-%d}_${now:%H-%M-%S}
     subdir: ${hydra.job.num}
