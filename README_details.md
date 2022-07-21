@@ -17,7 +17,9 @@
 The current `doc2json` tool uses Grobid to first process each PDF into XML, then extracts paper components from the XML.
 If you fail to install Doc2Json or Grobid with `bin/doc2json/scripts/run.sh` , try to execute the following command:
 ```bash
-python bin/doc2json/setup.py develop
+cd bin/doc2json
+python setup.py develop
+cd ../..
 ```
 This will setup Doc2Json.
 
