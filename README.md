@@ -1,4 +1,5 @@
 
+
 <div align="center">
    
 # BERT ParsCit
@@ -35,13 +36,26 @@ conda activate myenv
 pip install -r requirements.txt
 ```
 
+### Set up PDF parsing engine s2orc-doc2json
+The current `doc2json` tool is used to convert PDF to JSON. It uses Grobid to first process each PDF into XML, then extracts paper components from the XML.
+To setup Doc2Json, you should run:
+```bash
+sh bin/doc2json/scripts/run.sh
+```
+This will setup Doc2Json and Grobid. And after installation, it starts the Grobid server in the background by default.
+
+
+
 ## Example usage
 
-```bash
-from bert_parscit import predict_for_text
+```python
+from bert_parscit import predict_for_string, predict_for_text, predict_for_pdf
 
-result = predict_for_text("Calzolari, N. (1982) Towards the organization of lexical definitions on a database structure. In E. Hajicova (Ed.), COLING '82 Abstracts, Charles University, Prague, pp.61-64.")
+str_result = predict_for_string("Calzolari, N. (1982) Towards the organization of lexical definitions on a database structure. In E. Hajicova (Ed.), COLING '82 Abstracts, Charles University, Prague, pp.61-64.")
+text_result = predict_for_text("test.txt")
+pdf_result = predict_for_pdf("test.pdf")
 ```
+
 
 ## How to train
 
@@ -72,3 +86,5 @@ To show the full stack trace for error occurred during training or testing
 ```bash
 HYDRA_FULL_ERROR=1 python train.py
 ```
+
+

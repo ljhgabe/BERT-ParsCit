@@ -136,6 +136,7 @@ def tokenize_and_align_labels(examples, label2id):
 
     tokenized_inputs["labels"] = new_labels
     tokenized_inputs["word_ids"] = all_word_ids
+
     return tokenized_inputs
 
 
