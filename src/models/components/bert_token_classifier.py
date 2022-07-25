@@ -17,6 +17,7 @@ class BertTokenClassifier(nn.Module):
             model_checkpoint,
             cache_dir=cache_dir,
         )
+        print(f"The model checkpoint are cached in '{cache_dir}'.")
         self.output_size = output_size
         self.dropout = nn.Dropout(0.1)
         self.classifier = nn.Linear(in_features=768, out_features=output_size, bias=True)

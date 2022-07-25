@@ -42,6 +42,8 @@ class CoraLitModule(LightningModule):
         self.val_micro_f1_best = MaxMetric()
         # self.val_macro_f1_best = MaxMetric()
 
+
+
     def forward(self, inputs):
         return self.hparams.model(**inputs)
 
@@ -111,8 +113,9 @@ class CoraLitModule(LightningModule):
             label_names=LABEL_NAMES
         )
 
-        true_labels = torch.flatten(true_labels).to(torch.device("cuda", 0))
-        true_preds = torch.flatten(true_preds).to(torch.device("cuda", 0))
+        device = self.val_acc.device
+        true_labels = torch.flatten(true_labels).to(device)
+        true_preds = torch.flatten(true_preds).to(device)
 
         acc = self.test_acc(true_preds, true_labels)
         micro_f1 = self.test_micro_f1(true_preds, true_labels)
@@ -127,6 +130,7 @@ class CoraLitModule(LightningModule):
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def test_epoch_end(self, outputs: List[Any]):
+        # wandb.init()
         acc = self.test_acc.compute()
         micro_f1 = self.test_micro_f1.compute()
         macro_f1 = self.test_macro_f1.compute()
@@ -138,7 +142,7 @@ class CoraLitModule(LightningModule):
 
         plt.figure(figsize=(24, 26))
         sn.heatmap(confmat, annot=True, xticklabels=LABEL_NAMES, yticklabels=LABEL_NAMES, fmt='d')
-        wandb.log({"Confusion Matrix": wandb.Image(plt)})
+        # wandb.log({"Confusion Matrix": wandb.Image(plt)})
 
     def on_epoch_end(self):
         self.val_acc.reset()
