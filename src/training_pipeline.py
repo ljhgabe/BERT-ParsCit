@@ -103,9 +103,11 @@ def train(config: DictConfig) -> Optional[float]:
         callbacks=callbacks,
         logger=logger,
     )
-    
-    # model.model.bert_embedder.save_pretrained("/ssd1/jiahe/pretrained/scibert-synthetic-uncased-100k")
-    torch.save(model.model.state_dict(), "checkpoints/scibert-synthetic-uncased-full-100k")
+
+    # Override paths.model_dir in config file to change the dir to save model
+    # Override `model_name` in train.yaml to decide the name of the model
+    torch.save(model.model.state_dict(),
+               os.path.join(config.paths.model_dir,config.model_name))
 
     # Print path to best checkpoint
     if not config.trainer.get("fast_dev_run") and config.get("train"):

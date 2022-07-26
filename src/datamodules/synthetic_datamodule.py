@@ -1,26 +1,23 @@
 import datasets
 from datasets import Dataset, DatasetDict
-from transformers import DataCollatorForTokenClassification
 
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 
 from src.datamodules.components.synthetic_label import num_labels, label2id
-from src.datamodules.utils.datamodule_path import SYNTHETIC_DATA_CACHE_DIR, SYNTHETIC_DATASET_REPO
 from src.datamodules.components.process import preprocess, tokenize_and_align_labels, pad
-from src.models.components.bert_tokenizer import bert_tokenizer
 from typing import Optional, Tuple
 
 
 class SyntheticDataModule(LightningDataModule):
     def __init__(
         self,
-        data_repo: str = SYNTHETIC_DATASET_REPO,
+        data_repo: str,
         train_val_test_split: Tuple[int] = (100_000, 5_000, 10_000),
         train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
-        data_cache_dir: str = SYNTHETIC_DATA_CACHE_DIR,
+        data_cache_dir: str = ".cache",
         seed: int = 777
     ):
         super().__init__()

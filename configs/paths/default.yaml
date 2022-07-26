@@ -11,8 +11,15 @@ log_dir: ${paths.root_dir}/logs/
 
 # path to output directory, created dynamically by hydra
 # path generation pattern is specified in `configs/hydra/default.yaml`
-# use it to store all files generated during the run, like ckpts and metrics
-output_dir: ${hydra:runtime.output_dir}
+# use it to store all files generated during the run, like texts
+output_dir: ${paths.root_dir}/output
 
 # path to working directory
 work_dir: ${hydra:runtime.cwd}
+
+#path to save pretrained models
+model_dir: ${paths.root_dir}/models/${name}
+
+# path to save checkpoints
+ckpt_dir: ${paths.model_dir}/checkpoints
+

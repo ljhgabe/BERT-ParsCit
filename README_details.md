@@ -43,8 +43,10 @@ to start the Grobid server. Don't worry if it gets stuck at 87%; this is normal 
 ## How to Parse Reference Strings
 
 To parse reference strings from **a PDF file**, try:
+
 ```python
-from bert_parscit import predict_for_pdf
+from src.pipelines.bert_parscit import predict_for_pdf
+
 results, tokens, tags = predict_for_pdf(filename, output_dir, temp_dir)
 ```
 This will generate a text file of reference strings in the specified `output_dir`.
@@ -66,10 +68,12 @@ tags:
 ```
 
 You can also process **a single string** or parse strings from **a TEXT file**:
-```python
-from bert_parscit import predict_for_string, predict_for_text
 
-str_results, str_tokens, str_tags = predict_for_string("Waleed Ammar, Matthew E. Peters, Chandra Bhagavat- ula, and Russell Power. 2017. The ai2 system at semeval-2017 task 10 (scienceie): semi-supervised end-to-end entity and relation extraction. In ACL workshop (SemEval).")
+```python
+from src.pipelines.bert_parscit import predict_for_string, predict_for_text
+
+str_results, str_tokens, str_tags = predict_for_string(
+    "Waleed Ammar, Matthew E. Peters, Chandra Bhagavat- ula, and Russell Power. 2017. The ai2 system at semeval-2017 task 10 (scienceie): semi-supervised end-to-end entity and relation extraction. In ACL workshop (SemEval).")
 text_results, text_tokens, text_tags = predict_for_text(filename)
 ```
 

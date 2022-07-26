@@ -49,9 +49,10 @@ This will setup Doc2Json and Grobid. And after installation, it starts the Grobi
 ## Example usage
 
 ```python
-from bert_parscit import predict_for_string, predict_for_text, predict_for_pdf
+from src.pipelines.bert_parscit import predict_for_string, predict_for_text, predict_for_pdf
 
-str_result = predict_for_string("Calzolari, N. (1982) Towards the organization of lexical definitions on a database structure. In E. Hajicova (Ed.), COLING '82 Abstracts, Charles University, Prague, pp.61-64.")
+str_result = predict_for_string(
+    "Calzolari, N. (1982) Towards the organization of lexical definitions on a database structure. In E. Hajicova (Ed.), COLING '82 Abstracts, Charles University, Prague, pp.61-64.")
 text_result = predict_for_text("test.txt")
 pdf_result = predict_for_pdf("test.pdf")
 ```
@@ -63,10 +64,10 @@ Train model with default configuration
 
 ```bash
 # train on CPU
-python train.py trainer.gpus=0
+python train.py trainer.accelerator="cpu"
 
 # train on GPU
-python train.py trainer.gpus=1
+python train.py trainer.accelerator="gpu" devices=1
 ```
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
