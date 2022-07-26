@@ -1,7 +1,8 @@
 from transformers import AutoTokenizer
-from src.models.utils.bert_model_config import BERT_MODEL_CHECKPOINT
-from src.models.utils.bert_model_config import MODEL_MAX_LENGTH
-from src.models.utils.bert_model_path import TOKENIZER_CACHE_DIR
+
+BERT_MODEL_CHECKPOINT = "allenai/scibert_scivocab_uncased"
+MODEL_MAX_LENGTH = 512
+TOKENIZER_CACHE_DIR = ".cache"
 
 bert_tokenizer = AutoTokenizer.from_pretrained(
     BERT_MODEL_CHECKPOINT,

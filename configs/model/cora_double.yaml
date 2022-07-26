@@ -5,4 +5,4 @@ model:
   _target_: src.models.components.bert_token_classifier_double.BertTokenClassifierDouble
   model_checkpoint: ${paths.root_dir}/pretrained/scibert-synthetic-uncased-full-100k"
   output_size: 13
-  cache_dir: ${paths.root_dir}/cached/
+  cache_dir: ${paths.root_dir}/.cache/

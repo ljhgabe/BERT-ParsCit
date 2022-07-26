@@ -11,11 +11,12 @@ from datasets import Dataset
 from src.models.components.bert_token_classifier import BertTokenClassifier
 from src.datamodules.components.cora_label import LABEL_NAMES
 from src.models.components.bert_tokenizer import bert_tokenizer
-from pdf2text import process_pdf_file, get_reference
+from src.utils.pdf2text import process_pdf_file, get_reference
 
-BASE_OUTPUT_DIR = "result"
-BASE_TEMP_DIR = "temp"
-BASE_CACHE_DIR = "cached"
+ROOT_DIR = os.getcwd()
+BASE_OUTPUT_DIR = os.path.join(ROOT_DIR, "output/result")
+BASE_TEMP_DIR = os.path.join(ROOT_DIR,"output/.temp")
+BASE_CACHE_DIR = os.path.join(ROOT_DIR, ".cache")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -30,9 +31,11 @@ model.eval()
 if torch.cuda.is_available():
     model.cuda()
     print("CUDA is available.")
+else:
+    print("Not use CUDA.")
 
 
-def dehyphen(text: str):
+def dehyphen_for_str(text: str):
     text = text.replace("- ", "")
     text = text.replace("-", " ")
     return text
@@ -200,7 +203,7 @@ def predict_for_string(example: str, dehyphen: Optional[bool] = False) -> Tuple[
     """
     # remove '-' in text
     if dehyphen == True:
-        example = dehyphen(example)
+        example = dehyphen_for_str(example)
 
     splitted_example = [example.split()]
     results, tokens, preds = predict(splitted_example)
@@ -237,7 +240,7 @@ def predict_for_text(
 
     # remove '-' in text
     if dehyphen == True:
-        examples = [dehyphen(example) for example in examples]
+        examples = [dehyphen_for_str(example) for example in examples]
 
     splitted_examples = [example.split() for example in examples]
     results, tokens, preds = predict(splitted_examples)

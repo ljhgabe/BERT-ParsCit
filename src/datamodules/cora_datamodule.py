@@ -6,20 +6,18 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
 
 from src.datamodules.components.cora_label import num_labels, label2id
-from src.datamodules.utils.datamodule_path import CORA_DATA_CACHE_DIR, CORA_DATASET_REPO
 from src.datamodules.components.process import tokenize_and_align_labels, pad
-from src.models.components.bert_tokenizer import bert_tokenizer
 from typing import Optional
 
 
 class CoraDataModule(LightningDataModule):
     def __init__(
         self,
-        data_repo: str = CORA_DATASET_REPO,
+        data_repo: str,
         train_batch_size: int = 8,
         num_workers: int = 0,
         pin_memory: bool = False,
-        data_cache_dir: str = CORA_DATA_CACHE_DIR,
+        data_cache_dir: str = ".cache",
         seed: int = 777
     ):
         super().__init__()
