@@ -1,22 +1,21 @@
 from torch import nn
 from transformers import AutoModel
 from transformers.modeling_outputs import TokenClassifierOutput
-from src.models.utils.bert_model_config import BERT_MODEL_CHECKPOINT
-from src.models.utils.bert_model_path import MODEL_CACHE_DIR
 
 
 class BertTokenClassifier(nn.Module):
     def __init__(
         self,
-        model_checkpoint: str = BERT_MODEL_CHECKPOINT,
+        model_checkpoint: str = "allenai/scibert_scivocab_uncased",
         output_size: int = 19,
-        cache_dir: str = MODEL_CACHE_DIR
+        cache_dir: str = ".cache"
     ):
         super().__init__()
         self.bert_embedder = AutoModel.from_pretrained(
             model_checkpoint,
             cache_dir=cache_dir,
         )
+        print(f"The model checkpoint are cached in '{cache_dir}'.")
         self.output_size = output_size
         self.dropout = nn.Dropout(0.1)
         self.classifier = nn.Linear(in_features=768, out_features=output_size, bias=True)

@@ -3,16 +3,15 @@ from torch import nn
 from transformers.modeling_outputs import TokenClassifierOutput
 from src.datamodules.components.cora_label import num_labels
 from src.models.components.bert_token_classifier import BertTokenClassifier
-from src.models.utils.bert_model_config import BERT_PARSCIT_CHECKPOINT
-from src.models.utils.bert_model_path import MODEL_CACHE_DIR
+
 
 
 class BertTokenClassifierDouble(nn.Module):
     def __init__(
         self,
-        model_checkpoint: str = BERT_PARSCIT_CHECKPOINT,
+        model_checkpoint: str,
         output_size: int = num_labels,
-        cache_dir: str = MODEL_CACHE_DIR
+        cache_dir: str = ".cache"
     ):
         super().__init__()
         self.bert_classifier: BertTokenClassifier = BertTokenClassifier()

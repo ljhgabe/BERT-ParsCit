@@ -3,12 +3,13 @@
 # specify here default evaluation configuration
 defaults:
   - _self_
-  - datamodule: synthetic.yaml # choose the datamodule for evaluation
-  - model: synthetic.yaml
+  - datamodule: cora.yaml # choose the datamodule for evaluation
+  - model: cora.yaml
   - callbacks: null
   - logger: null
   - trainer: default.yaml
   - log_dir: evaluation.yaml
+  - paths: default.yaml
 
   - experiment: null
 
