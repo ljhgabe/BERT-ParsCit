@@ -54,6 +54,13 @@
   <component name="GithubDefaultAccount">
     <option name="defaultAccountId" value="040e3147-a9f0-4089-ad50-31135d7ea624" />
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/ljhgabe/BERT-ParsCit.git" />
+      </set>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -111,6 +118,14 @@
       <workItem from="1656337211412" duration="2710000" />
       <workItem from="1656838572544" duration="2733000" />
     </task>
+    <task id="LOCAL-00001" summary=".gitignore">
+      <created>1659349890572</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1659349890572</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,22 +151,38 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=".gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value=".gitignore" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="721" y="286" key="#Notifications" timestamp="1659349660256">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="721" y="286" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1659349660256" />
+    <state x="217" y="77" key="DiffContextDialog" timestamp="1659349815208">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="217" y="77" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1659349815208" />
+    <state x="216" y="76" key="MergeDialog" timestamp="1659350007303">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="216" y="76" key="MergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1659350007303" />
+    <state x="472" y="184" key="MultipleFileMergeDialog" timestamp="1659350015925">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="472" y="184" key="MultipleFileMergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1659350015925" />
     <state x="339" y="68" key="SettingsEditor" timestamp="1659349774210">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="339" y="68" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1659349774210" />
-    <state x="430" y="157" key="Vcs.Push.Dialog.v2" timestamp="1659349676511">
+    <state x="430" y="157" key="Vcs.Push.Dialog.v2" timestamp="1659349985509">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="430" y="157" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1659349676511" />
-    <state x="528" y="211" key="git4idea.merge.GitPullDialog" timestamp="1659349715978">
+    <state x="430" y="157" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1659349985509" />
+    <state x="528" y="211" key="git4idea.merge.GitPullDialog" timestamp="1659349901081">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="528" y="211" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1659349715978" />
+    <state x="528" y="211" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1659349901081" />
   </component>
 </project>
