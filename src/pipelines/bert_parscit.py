@@ -13,6 +13,7 @@ from src.datamodules.components.cora_label import LABEL_NAMES
 from src.datamodules.components.cora_label import label2id
 from src.utils.pdf2text import process_pdf_file, get_reference
 from src.utils.pad_for_token_level import pad, tokenize_and_align_labels
+
 ROOT_DIR = os.getcwd()
 BASE_OUTPUT_DIR = os.path.join(ROOT_DIR, "output/result")
 BASE_TEMP_DIR = os.path.join(ROOT_DIR,"output/.temp")
@@ -27,6 +28,7 @@ model = BertTokenClassifier(
 )
 
 model.load_state_dict(torch.load("models/default/scibert-uncased.pt"))
+
 model.eval()
 if torch.cuda.is_available():
     model.cuda()
@@ -49,6 +51,8 @@ def to_device(batch):
         "attention_mask": batch["attention_mask"].to(device),
         "h_mapping": batch["h_mapping"].to(device)
     }
+
+
 
 def predict(examples: List[List[str]]) -> Tuple[List[str], List[List[str]], List[List[str]]]:
     """
@@ -83,6 +87,7 @@ def predict(examples: List[List[str]]) -> Tuple[List[str], List[List[str]], List
     true_preds = []
     for batch in dataloader:
         #Predict the labels
+
         batch = to_device(batch)
         outputs = model(**batch)
         preds = outputs.logits.argmax(dim=-1)
@@ -90,6 +95,7 @@ def predict(examples: List[List[str]]) -> Tuple[List[str], List[List[str]], List
         #merge the labels according to origin tokens.
         preds = [[LABEL_NAMES[i] for i in pred if i<len(LABEL_NAMES)] for pred in preds]
         true_preds.extend(preds)
+
     tokens = examples
 
     #Generate the tagged strings.

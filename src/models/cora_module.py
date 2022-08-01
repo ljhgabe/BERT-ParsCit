@@ -47,6 +47,8 @@ class CoraLitModule(LightningModule):
         self.save_path = os.path.join(model_dir,save_name)
 
 
+
+
     def forward(self, inputs):
         return self.hparams.model(**inputs)
 
@@ -108,6 +110,7 @@ class CoraLitModule(LightningModule):
         loss, preds, labels = self.step(batch)
 
         true_preds, true_labels = postprocess(preds, labels, LABEL_NAMES)
+
         device = self.val_acc.device
         true_labels = torch.flatten(true_labels).to(device)
         true_preds = torch.flatten(true_preds).to(device)
