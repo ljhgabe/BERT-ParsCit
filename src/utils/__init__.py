@@ -97,8 +97,8 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.log", "w") as file:
-        rich.print(tree, file=file)
+    # with open("config_tree.log", "w") as file:
+    #     rich.print(tree, file=file)
 
 
 @rank_zero_only

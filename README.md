@@ -64,10 +64,12 @@ Train model with default configuration
 
 ```bash
 # train on CPU
-python train.py trainer.accelerator=cpu
+
+python train.py trainer=cpu
 
 # train on GPU
-python train.py trainer.accelerator=gpu devices=1
+python train.py trainer=gpu 
+
 ```
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)

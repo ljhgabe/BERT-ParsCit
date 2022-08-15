@@ -1,7 +1,7 @@
+import os
 from typing import Any, List
 
 import torch
-import wandb
 import seaborn as sn
 import matplotlib.pyplot as plt
 
@@ -14,7 +14,7 @@ from torchmetrics.classification.accuracy import Accuracy
 from src.models.components.bert_token_classifier import BertTokenClassifier
 
 from src.datamodules.components.cora_label import num_labels, LABEL_NAMES
-from src.datamodules.components.process import postprocess
+from src.utils.pad_for_token_level import postprocess
 
 
 class CoraLitModule(LightningModule):
@@ -33,14 +33,17 @@ class CoraLitModule(LightningModule):
         self.test_acc = Accuracy(num_classes=num_labels+1, ignore_index=num_labels)
         self.val_micro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="micro")
         self.test_micro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="micro")
-        # self.val_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
+        self.val_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
         self.test_macro_f1 = F1Score(num_classes=num_labels+1, ignore_index=num_labels, average="macro")
 
         self.conf_matrix = ConfusionMatrix(num_classes=num_labels+1)
 
         self.val_acc_best = MaxMetric()
         self.val_micro_f1_best = MaxMetric()
-        # self.val_macro_f1_best = MaxMetric()
+        self.val_macro_f1_best = MaxMetric()
+        self.best_f1 = 0
+        self.save_path = os.path.join(self.model.model_dir,self.model.save_name)
+
 
 
 
@@ -49,7 +52,7 @@ class CoraLitModule(LightningModule):
 
     def on_train_start(self):
         self.val_acc_best.reset()
-        # self.val_macro_f1_best.reset()
+        self.val_macro_f1_best.reset()
         self.val_micro_f1_best.reset()
 
     def step(self, batch: Any):
@@ -69,25 +72,20 @@ class CoraLitModule(LightningModule):
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        word_ids = batch["word_ids"]
-        true_preds, true_labels = postprocess(
-            word_ids=word_ids,
-            predictions=preds,
-            labels=labels,
-            label_names=LABEL_NAMES,
-        )
 
+        true_preds, true_labels = postprocess(preds, labels, LABEL_NAMES)
         true_labels = torch.flatten(true_labels)
         true_preds = torch.flatten(true_preds)
+        self.val_macro_f1 = self.val_macro_f1.to(true_preds.device)
 
         acc = self.val_acc(true_preds, true_labels)
         micro_f1 = self.val_micro_f1(true_preds, true_labels)
-        # macro_f1 = self.val_macro_f1(true_preds, true_labels)
+        macro_f1 = self.val_macro_f1(true_preds, true_labels)
 
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/micro_f1", micro_f1, on_step=False, on_epoch=True, prog_bar=True)
-        # self.log("val/macro_f1", macro_f1, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/macro_f1", macro_f1, on_step=False, on_epoch=True, prog_bar=True)
         return {"loss": loss, "preds": true_preds, "labels": true_labels}
 
     def validation_epoch_end(self, outputs: List[Any]):
@@ -98,20 +96,19 @@ class CoraLitModule(LightningModule):
         micro_f1 = self.val_micro_f1.compute()
         self.val_micro_f1_best.update(micro_f1)
         self.log("val/micro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
-
-        # macro_f1 = self.val_macro_f1.compute()
-        # self.val_macro_f1_best.update(macro_f1)
-        # self.log("val/macro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
+        if micro_f1 > self.best_f1:
+            # print(f"The micro_f1 on validation set: {micro_f1:.3f}, higher than the previous best one {self.best_f1:.3f}")
+            print(f"Epoch: {self.current_epoch}: Save the current best model.")
+            self.best_f1 = micro_f1
+            torch.save(self.model.state_dict(), self.save_path)
+        macro_f1 = self.val_macro_f1.compute()
+        self.val_macro_f1_best.update(macro_f1)
+        self.log("val/macro_f1_best", self.val_micro_f1_best.compute(), on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, labels = self.step(batch)
-        word_ids = batch["word_ids"]
-        true_preds, true_labels = postprocess(
-            word_ids=word_ids,
-            predictions=preds,
-            labels=labels,
-            label_names=LABEL_NAMES
-        )
+
+        true_preds, true_labels = postprocess(preds, labels, LABEL_NAMES)
 
         device = self.val_acc.device
         true_labels = torch.flatten(true_labels).to(device)
